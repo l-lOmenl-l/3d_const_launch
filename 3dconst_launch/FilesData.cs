@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace _3dconst_launch
 {
@@ -93,7 +91,7 @@ namespace _3dconst_launch
 
         private static void deletefiles(List<string> files)
         {
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 File.Delete(file);
             }
@@ -106,7 +104,7 @@ namespace _3dconst_launch
             Dictionary<string, string> server = GetServerFilesData();
 
 
-            foreach (var file in server) 
+            foreach (var file in server)
             {
                 string temp = config.conf.Path_const + file.Key;
                 if (!local.ContainsKey(temp))

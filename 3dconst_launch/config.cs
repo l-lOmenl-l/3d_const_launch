@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace _3dconst_launch
 {
     internal class config
     {
-        
+
         public class Conf
         {
             public string Local_version { get; set; }
@@ -77,7 +76,8 @@ namespace _3dconst_launch
             {
                 Directory.CreateDirectory(GetPathConfig(false));
             }
-            if (!File.Exists(GetPathConfig(true))){
+            if (!File.Exists(GetPathConfig(true)))
+            {
                 await createConf(mainWindow);
             }
             if (Directory.Exists(conf.Path_const + "/temp"))
@@ -93,18 +93,18 @@ namespace _3dconst_launch
                 if (!FilesData.checkFiles())
                 {
                     mainWindow.changeMessageAsync("Файлы не прошли проверку, готов к обновлению");
-                    mainWindow.btnUpdate();
+                    mainWindow.btnChange("Обновление");
                 }
                 else
                 {
                     mainWindow.changeMessageAsync("Готов к запуску");
-                    mainWindow.btnPlay();
+                    mainWindow.btnChange("Запустить");
                 }
             }
             else
             {
                 mainWindow.changeMessageAsync("Конструктор не установлен, готов к загрузке");
-                mainWindow.btnDownload();
+                mainWindow.btnChange("Загрузить");
             }
 
 

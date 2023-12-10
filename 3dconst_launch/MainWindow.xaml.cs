@@ -1,31 +1,11 @@
-﻿using DevExpress.Mvvm.UI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Security.Cryptography;
-using System.Security.RightsManagement;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static _3dconst_launch.config;
-using static System.Net.WebRequestMethods;
 
 namespace _3dconst_launch
 {
@@ -41,10 +21,34 @@ namespace _3dconst_launch
         public MainWindow()
         {
             InitializeComponent();
+            checklauncher();
+
+
+            init();
+        }
+
+        public void checklauncher()
+        {
             var path = System.Reflection.Assembly.GetEntryAssembly().Location;
             MD5 md5 = MD5.Create();
             var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path))).Replace("-", "").ToLower();
-            init();
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.conf.ip_server + "/check_launcher");
+            req.Method = "GET";
+            req.Headers.Add("Authorization", download.auth());
+            req.Proxy = null;
+
+            HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+            var myjson = JsonSerializer.Deserialize<string>(res.GetResponseStream());
+            if (hash != myjson)
+            {
+                
+                Process proc = new Process();
+                proc.StartInfo.FileName = path.Remove(path.LastIndexOf("\\"))+"/update_launcher.exe";
+                proc.Start();
+                System.Windows.Application.Current.Shutdown();
+            }
+
         }
 
 
@@ -70,26 +74,18 @@ namespace _3dconst_launch
             await Task.Run(() => Dispatcher.Invoke(() => label_message.Content = msg));
         }
 
-        public async void btnPlay()
+
+        public async void btnChange(string value)
         {
             await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Запустить"));
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = value));
         }
 
-        public async void btnUpdate()
-        {
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Обновление"));
-        }
 
-        public async void btnDownload()
-        {
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Загрузить"));
-        }
+        
 
         private async void Btn_download_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             switch (Btn_download.Content)
             {
                 case "Загрузить":

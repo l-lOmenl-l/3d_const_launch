@@ -1,21 +1,16 @@
-﻿using DevExpress.Mvvm.UI.Interactivity.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
-using static System.Net.WebRequestMethods;
 
 namespace _3dconst_launch
 {
     internal class download
     {
 
-        private static string auth()
+        public static string auth()
         {
             return "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes("3dConst" + ":" + "UdyT0epH"));
         }
@@ -29,11 +24,11 @@ namespace _3dconst_launch
 
             //serverData.RemoveRange(10, 37);
 
-            foreach (var (file, index) in files.Select((value, i)=>(value, i)))
+            foreach (var (file, index) in files.Select((value, i) => (value, i)))
             {
                 int myindex = index + 1;
-                
-                
+
+
 
                 mainWindow.changeMessageAsync("Скачивается файл " + (index + 1) + " из " + files.Count());
                 mainWindow.ChangeProgressBatAsync(((float)index + (float)1) * (100 / (float)files.Count()));
@@ -48,7 +43,7 @@ namespace _3dconst_launch
                         Directory.CreateDirectory(config.conf.Path_const + str);
                     }
                 }
-                
+
                 using (var wc = new WebClient())
                 {
                     wc.Proxy = null;
@@ -64,7 +59,7 @@ namespace _3dconst_launch
 
             mainWindow.ChangeProgressBarVisibility(System.Windows.Visibility.Hidden);
             mainWindow.changeMessageAsync("Проверка файлов");
-            foreach (var item in Directory.GetFiles(config.conf.Path_const + "/temp/", "*", SearchOption.AllDirectories)) 
+            foreach (var item in Directory.GetFiles(config.conf.Path_const + "/temp/", "*", SearchOption.AllDirectories))
             {
                 string newfile = (config.conf.Path_const + item.Replace(config.conf.Path_const + "/temp", ""));
                 System.IO.File.Copy(item, newfile, true);
@@ -73,7 +68,7 @@ namespace _3dconst_launch
 
             System.IO.Directory.Delete(config.conf.Path_const + "/temp/", true);
             mainWindow.changeMessageAsync("Файлы успешно прошли проверку");
-            mainWindow.btnPlay();
+            mainWindow.btnChange("Запустить");
 
         }
     }

@@ -1,20 +1,29 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace _3dconst_launch
 {
     internal class config
     {
+        
         public class Conf
         {
-            public string Local_version {  get; }
-            public bool Setup { get; }
+            public string Local_version { get; set; }
+            public bool Setup { get; set; }
 
-            public Conf(string local_version, bool setup)
+            public string Path_const { get; set; }
+
+            public string ip_server { get; set; }
+
+            public Conf(string local_version, bool setup, string path_const, string ip)
             {
                 Local_version = local_version;
                 Setup = setup;
+                Path_const = path_const;
+                ip_server = ip;
             }
 
             public bool GetSetup()
@@ -29,44 +38,89 @@ namespace _3dconst_launch
 
         }
 
-        static public Conf conf = new Conf("", false);
+        static public Conf conf = new Conf("none", false, "D:/TestDirectory", "http://192.168.0.105:8000");
 
 
-        static public string GetPathConfig()
+        static public string GetPathConfig(bool addfile)
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Launcher_E1/conf.json"; ;
+            if (addfile)
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Launcher_E1/conf.json";
+            }
+            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Launcher_E1/";
         }
 
-        static public void createConf()
+        public static async Task createConf(MainWindow mainWindow)
         {
-            conf = new Conf("none", false);
-            FileStream createStream = File.Create(GetPathConfig());
-            JsonSerializer.SerializeAsync(createStream, conf);
+            await Task.Run(() => mainWindow.changeMessageAsync("Создание конфигурации"));
+            conf = new Conf("none", false, "D:/TestDirectory", "http://192.168.0.105:8000");
+            FileStream createStream = File.Create(GetPathConfig(true));
+            JsonSerializer.Serialize(createStream, conf);
             createStream.Dispose();
         }
 
         static public void readConf()
         {
-            FileStream readStream = File.OpenRead(GetPathConfig());
+            while (!File.Exists(GetPathConfig(true)))
+            {
+
+            }
+            FileStream readStream = File.OpenRead(GetPathConfig(true));
             conf = JsonSerializer.Deserialize<Conf>(readStream);
         }
 
-       static public void init()
+
+
+        public static async void init(MainWindow mainWindow)
         {
-            if (!File.Exists(GetPathConfig())){
-                createConf();
+            if (!Directory.Exists(GetPathConfig(false)))
+            {
+                Directory.CreateDirectory(GetPathConfig(false));
+            }
+            if (!File.Exists(GetPathConfig(true))){
+                await createConf(mainWindow);
+            }
+            if (Directory.Exists(conf.Path_const + "/temp"))
+            {
+                Directory.Delete(conf.Path_const + "/temp", true);
+            }
+            mainWindow.changeMessageAsync("Проверка конфигурации");
+
+
+
+            if (FilesData.GetLocalFilesData().Count > 0)
+            {
+                if (!FilesData.checkFiles())
+                {
+                    mainWindow.changeMessageAsync("Файлы не прошли проверку, готов к обновлению");
+                    mainWindow.btnUpdate();
+                }
+                else
+                {
+                    mainWindow.changeMessageAsync("Готов к запуску");
+                    mainWindow.btnPlay();
+                }
+            }
+            else
+            {
+                mainWindow.changeMessageAsync("Конструктор не установлен, готов к загрузке");
+                mainWindow.btnDownload();
             }
 
-            readConf();
 
+
+
+            /*
             if (conf.GetLocalVersion() == "none")
             {
-                MainWindow.const_download();
+                mainWindow.changeMessageAsync("Конструктор не установлен, готов к загрузке");
+                mainWindow.const_download();
             } 
-
+            */
 
 
         }
+
 
 
 

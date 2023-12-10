@@ -1,60 +1,142 @@
-﻿using System;
+﻿using DevExpress.Mvvm.UI;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Security.RightsManagement;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static _3dconst_launch.config;
+using static System.Net.WebRequestMethods;
 
 namespace _3dconst_launch
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+    /// 
+
+
 
     public partial class MainWindow : Window
     {
-        static System.Windows.Controls.Label ui_TB_Message;
-
         public MainWindow()
         {
             InitializeComponent();
-            ui_TB_Message = TB_Message;
-            TB_Message.Content = "Start";
-            config.init();
-            
+            var path = System.Reflection.Assembly.GetEntryAssembly().Location;
+            MD5 md5 = MD5.Create();
+            var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path))).Replace("-", "").ToLower();
+            init();
         }
 
-        public static void const_actual()
+
+        public async void init()
         {
-            ui_TB_Message.Content = "Actual";
+            await Task.Run(() => config.init(this));
+
+            //CheckDiffPath();
         }
 
-        public static void const_update()
+        public async void ChangeProgressBatAsync(float value)
         {
-            ui_TB_Message.Content = "update";
+            await Task.Run(() => Dispatcher.Invoke(() => ProgressUpload.Value = value));
         }
 
-        public static void const_download()
+        public async void ChangeProgressBarVisibility(Visibility value)
         {
-            ui_TB_Message.Content = "download";
+            await Task.Run(() => Dispatcher.Invoke(() => ProgressUpload.Visibility = value));
         }
 
-        static public void ChangeMessage(string msg)
+        public async void changeMessageAsync(string msg)
         {
-            ui_TB_Message.Content = msg;
+            await Task.Run(() => Dispatcher.Invoke(() => label_message.Content = msg));
+        }
+
+        public async void btnPlay()
+        {
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Запустить"));
+        }
+
+        public async void btnUpdate()
+        {
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Обновление"));
+        }
+
+        public async void btnDownload()
+        {
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = "Загрузить"));
+        }
+
+        private async void Btn_download_Click(object sender, RoutedEventArgs e)
+        { 
+            switch (Btn_download.Content)
+            {
+                case "Загрузить":
+                    Btn_download.IsEnabled = false;
+                    await Task.Run(() => download.DownloadConstruct(this, FilesData.GetServerPath()));
+                    break;
+
+                case "Обновление":
+                    Btn_download.IsEnabled = false;
+                    await Task.Run(() => download.DownloadConstruct(this, FilesData.checkDiffFiles()));
+                    break;
+
+                case "Запустить":
+                    Process proc = new Process();
+                    proc.StartInfo.FileName = config.conf.Path_const + "/3dconst.exe";
+                    proc.Start();
+                    break;
+            }
+
+
+
+        }
+
+        public void const_actual()
+        {
+            label_message.Content = "Actual";
+        }
+
+        public void const_update()
+        {
+            label_message.Content = "update";
+        }
+
+        public void const_download()
+        {
+            label_message.Content = "Готов к загрузке";
+            Btn_download.Content = "Загрузить";
+        }
+
+        public void ChangeMessage(string msg)
+        {
+            label_message.Content = msg;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton==MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragMove();
             }
@@ -67,7 +149,10 @@ namespace _3dconst_launch
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
+
+
+
     }
 }

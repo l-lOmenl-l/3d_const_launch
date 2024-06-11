@@ -12,28 +12,31 @@ namespace _3dconst_launch
     {
         public static Dictionary<string, string> GetLocalFilesData()
         {
-            var result = new Dictionary<string, string>();
-
-            string[] path = Directory.GetFiles(config.conf.Path_const, "*", SearchOption.AllDirectories);
-            var md5 = MD5.Create();
-            foreach (string files in path)
+            if (Directory.Exists(config.getPath()))
             {
-                result.Add(files.Replace("\\", "/"), BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(files))).Replace("-", "").ToLower());
+                var result = new Dictionary<string, string>();
+
+                string[] path = Directory.GetFiles(config.getPath(), "*", SearchOption.AllDirectories);
+                var md5 = MD5.Create();
+                foreach (string files in path)
+                {
+                    result.Add(files.Replace("\\", "/"), BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(files))).Replace("-", "").ToLower());
+                }
+                return result;
             }
-            return result;
+            else
+            {
+                return new Dictionary<string, string>();
+            }
+            
         }
 
-        private static string auth()
-        {
-            return "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes("3dConst" + ":" + "UdyT0epH"));
-        }
-
-
+   
         public static Dictionary<string, string> GetServerFilesData()
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.conf.ip_server + "/MD5");
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/MD5");
             req.Method = "GET";
-            req.Headers.Add("Authorization", auth());
+            req.Headers.Add("Authorization", config.getAuth());
             req.Proxy = null;
             HttpWebResponse res = (HttpWebResponse)req.GetResponse();
             var myjson = JsonSerializer.Deserialize<Dictionary<string, string>>(res.GetResponseStream());
@@ -60,7 +63,7 @@ namespace _3dconst_launch
             List<string> delete = new List<string>();
             foreach (var file in server)
             {
-                string temp = config.conf.Path_const + file.Key;
+                string temp = config.getPath() + file.Key;
                 if (!local.ContainsKey(temp))
                 {
                     upload.Add(file.Key);
@@ -77,7 +80,7 @@ namespace _3dconst_launch
 
             foreach (var file in local)
             {
-                string temp = file.Key.Replace(config.conf.Path_const, "");
+                string temp = file.Key.Replace(config.getPath(), "");
                 if (!server.ContainsKey(temp))
                 {
                     delete.Add(file.Key);
@@ -106,7 +109,7 @@ namespace _3dconst_launch
 
             foreach (var file in server)
             {
-                string temp = config.conf.Path_const + file.Key;
+                string temp = config.getPath() + file.Key;
                 if (!local.ContainsKey(temp))
                 {
                     return false;
@@ -123,7 +126,7 @@ namespace _3dconst_launch
 
             foreach (var file in local)
             {
-                string temp = file.Key.Replace(config.conf.Path_const, "");
+                string temp = file.Key.Replace(config.getPath(), "");
                 if (!server.ContainsKey(temp))
                 {
                     return false;

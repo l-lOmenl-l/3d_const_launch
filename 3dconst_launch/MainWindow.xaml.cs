@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Linq;
+using IWshRuntimeLibrary;
 
 namespace _3dconst_launch
 {
@@ -20,12 +23,84 @@ namespace _3dconst_launch
     {
         public MainWindow()
         {
+            Loading loading = new Loading();
+            loading.Show();
+
             InitializeComponent();
+
+            config.checkConf(this);
+
+            if (config.getIP() == "https://3d.e-1.ru:8000/sync")
+            {
+                LabelTest.Visibility = Visibility.Collapsed;
+            } 
+            else 
+            { 
+                LabelTest.Visibility = Visibility.Visible;
+            }
+
+
+            config.init(this);
+            checkConnect();
+            appShortcutToDesktop();
             checklauncher();
 
-
             init();
+            loading.Close();
         }
+
+
+        private void appShortcutToDesktop()
+        {
+            string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            if (!System.IO.File.Exists(deskDir + "3dconst_launch"))
+            {
+                string name;
+                if (config.getIP() == "https://3d.e-1.ru:8000/sync")
+                {
+                   name = "3dconst_launch";
+                }
+                else
+                {
+                   name = "3dconst_launch_test";
+                }
+
+                using (StreamWriter writer = new StreamWriter(deskDir + "\\" + name + ".url"))
+                {
+                    string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    writer.WriteLine("[InternetShortcut]");
+                    writer.WriteLine("URL=file:///" + app);
+                    writer.WriteLine("IconIndex=0");
+                    string icon = app.Replace('\\', '/');
+                    writer.WriteLine("IconFile=" + icon);
+                }
+            }
+        }
+
+
+
+        private static void checkConnect()
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/status");
+            req.Method = "GET";
+            req.Headers.Add("Authorization", config.getAuth());
+            req.Proxy = null;
+            try
+            {
+                HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+            }
+            catch (WebException e)
+            {
+                var result = MessageBox.Show("Ошибка соединения с сервером, попробуйте запустить еще раз, через некоторое время.",
+                    "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+        }
+
 
         public void checklauncher()
         {
@@ -33,28 +108,29 @@ namespace _3dconst_launch
             MD5 md5 = MD5.Create();
             var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path))).Replace("-", "").ToLower();
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.conf.ip_server + "/check_launcher");
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/check_launcher");  
             req.Method = "GET";
-            req.Headers.Add("Authorization", download.auth());
+            req.Headers.Add("Authorization", config.getAuth());
             req.Proxy = null;
+
 
             HttpWebResponse res = (HttpWebResponse)req.GetResponse();
             var myjson = JsonSerializer.Deserialize<string>(res.GetResponseStream());
             if (hash != myjson)
-            {
-                
+            {/*
                 Process proc = new Process();
                 proc.StartInfo.FileName = path.Remove(path.LastIndexOf("\\"))+"/update_launcher.exe";
                 proc.Start();
-                System.Windows.Application.Current.Shutdown();
+                Application.Current.Shutdown();
+                */
             }
-
         }
 
 
         public async void init()
         {
-            await Task.Run(() => config.init(this));
+
+            
 
             //CheckDiffPath();
         }
@@ -82,7 +158,10 @@ namespace _3dconst_launch
         }
 
 
-        
+        public void AppClose()
+        {
+            Dispatcher.Invoke(() => Application.Current.Shutdown());
+        }
 
         private async void Btn_download_Click(object sender, RoutedEventArgs e)
         {
@@ -100,7 +179,7 @@ namespace _3dconst_launch
 
                 case "Запустить":
                     Process proc = new Process();
-                    proc.StartInfo.FileName = config.conf.Path_const + "/3dconst.exe";
+                    proc.StartInfo.FileName = config.getPath() + "/3dconst.exe";
                     proc.Start();
                     break;
             }
@@ -125,10 +204,8 @@ namespace _3dconst_launch
             Btn_download.Content = "Загрузить";
         }
 
-        public void ChangeMessage(string msg)
-        {
-            label_message.Content = msg;
-        }
+        public void ChangeMessage(string msg) => label_message.Content = msg;
+
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -138,17 +215,14 @@ namespace _3dconst_launch
             }
         }
 
-        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        private void btnMinimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+        private void btnClose_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
+
+        private void btnSettings_Click(object sender, RoutedEventArgs e) 
         {
-            WindowState = WindowState.Minimized;
+            Settings SettingWindow = new Settings();
+            SettingWindow.Show();
         }
-
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Application.Current.Shutdown();
-        }
-
-
-
     }
 }

@@ -5,19 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_3dconst_launch"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="800"
+        Title="E1 Launcher" Height="550" Width="800"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
         AllowsTransparency="True"
-        MouseDown="Window_MouseDown">
+        MouseDown="Window_MouseDown" Icon="/images/logoBorder.png">
+    
 
+    
     <Border CornerRadius="10" >
         <Border.Background>
             <ImageBrush ImageSource="/images/back.jpg" Stretch="UniformToFill"/>
-
-
         </Border.Background >
             
     <Border CornerRadius="10"
@@ -43,105 +43,72 @@
             <Grid>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
+                    <RowDefinition Height="50" />
                     <RowDefinition/>
                     <RowDefinition Height="70" />
                 </Grid.RowDefinitions>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="25"/>
-                        <ColumnDefinition Width="25"/>
-                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
+                    <Label x:Name="LabelTest"
+                           Content="Test"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" FontFamily="Source Serif Pro"
+                           FontSize="16"
+                           Opacity="0.5"
+                           Visibility="Visible"/>
+
+                    <Button x:Name="btnSettings"
+                            Content="Настройки"
+                            Height="25"
+                            Width="75"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Grid.Column="1"
+                            DataContext="9"
+                            Style="{StaticResource ButtonSettings}"
+                            Template="{StaticResource CornerButton}"
+                            Click="btnSettings_Click"/>
 
                     <Button x:Name="btnMinimize"
                             BorderThickness="0"
-                            Content="-"
-                            Foreground="White"
-                            FontSize="16"
-                            FontFamily="Montserrat"
-                            Cursor="Hand"
-                            Grid.Column="1"
-                            Click="btnMinimize_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#28AEED"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#278BEF"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Width="18" Height="18"
-                                        CornerRadius="9"
-                                        Background="{TemplateBinding Background}">
-                                    <ContentPresenter VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center" />
-
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                            Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="22"
+                            Height="22"
+                            DataContext="11"
+                            Style ="{StaticResource ButtonMinimaze}"
+                            Template="{StaticResource CornerButton}"
+                            Click="btnMinimize_Click"/>
 
                     <Button x:Name="btnClose"
-                             BorderThickness="0"
-                             Content="X"
-                             Foreground="White"
-                             FontSize="12"
-                             FontFamily="Montserrat"
-                             Cursor="Hand"
-                             Grid.Column="2"
-                             Click="btnClose_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#FFBF0000"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FF5A0000"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Width="18" Height="18"
-                                        CornerRadius="9"
-                                        Background="{TemplateBinding Background}">
-                                    <ContentPresenter VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center" />
-
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>  
-                    </Button>
+                            Grid.Column="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="22"
+                            Height="22"
+                            DataContext="11"
+                            Style="{StaticResource ButtonClose}"
+                            Template="{StaticResource CornerButton}"
+                            Click="btnClose_Click"/>
                 </Grid>
 
-                
-
+            
                  <StackPanel Width="250" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0,35,0,0">
                     <Image Source="/images/logo.png" Width="100" Height="100" Stretch="Fill"/>
-                    <TextBlock Text="Шкафы-купе"
-                               Foreground="White"
-                               FontSize="23"
-                               HorizontalAlignment="Center"
-                               FontFamily="Amiri"/>
-
-                    <TextBlock Text="222"
-           Foreground="White"
-           FontSize="23"
-           HorizontalAlignment="Center"
-           FontFamily="Amiri"/>
-
-
-
-
+                    <TextBlock Text="Шкафы-купе" 
+                               HorizontalAlignment="Center" 
+                               DataContext="20" 
+                               Style="{StaticResource StyleForTextBlock}"/>
                 </StackPanel>
+                
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -176,40 +143,22 @@
                                FontSize="16"
                                FontFamily="Amiri"
                                Margin="0,0,20,0"/>
-
-
-                        
-
                     </Grid>
-                    
+                   
                     <Button x:Name="Btn_download"
-                             BorderThickness="0"
-                             Content="Запустить"
-                             Foreground="White"
-                             FontSize="30"
-                             FontFamily="Bahnschrift SemiBold"
-                             Cursor="Hand"
-                             Grid.Column="1"
+                            BorderThickness="0"
+                            Content="Запустить"
+                            Grid.Column="1"
                             IsEnabled="False"
-                             Click="Btn_download_Click" Height="70" VerticalAlignment="Bottom">
-
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#67B534"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FF98DE6A"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Background" Value="Gray"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
+                            DataContext="30"
+                            Style="{StaticResource ButtonDownload}"
+                            
+                            Click="Btn_download_Click" 
+                            FontFamily="Source Serif Pro">
+                
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="9,0,9,0">
                                     <ContentPresenter VerticalAlignment="Center"
                                                       HorizontalAlignment="Center" />
 

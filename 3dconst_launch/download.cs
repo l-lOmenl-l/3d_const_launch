@@ -10,17 +10,17 @@ using System.Threading;
 
 namespace _3dconst_launch
 {
-    internal class download
+    internal abstract class Download
     {
 
         public static void DownloadConstruct(MainWindow mainWindow, List<string> files)
         {
-            if (!Directory.Exists(config.getPath())) 
+            if (!Directory.Exists(Config.GetPath())) 
             {
-                Directory.CreateDirectory(config.getPath());
+                Directory.CreateDirectory(Config.GetPath());
             }
 
-            Directory.CreateDirectory(config.getPath() + "/temp");
+            Directory.CreateDirectory(Config.GetPath() + "/temp");
             //List<string> serverData = new List<string>();
 
             mainWindow.ChangeProgressBarVisibility(System.Windows.Visibility.Visible);
@@ -29,58 +29,57 @@ namespace _3dconst_launch
 
             foreach (var (file, index) in files.Select((value, i) => (value, i)))
             {
-                int myindex = index + 1;
-                mainWindow.changeMessageAsync("Скачивается файл " + (index + 1) + " из " + files.Count());
+                mainWindow.ChangeMessageAsync("Скачивается файл " + (index + 1) + " из " + files.Count());
                 mainWindow.ChangeProgressBatAsync(((float)index + (float)1) * (100 / (float)files.Count()));
 
                 string str = file;
-                str = str.Remove(str.LastIndexOf("/"));
+                str = str.Remove(str.LastIndexOf("/", StringComparison.Ordinal));
                 if (str != "")
                 {
                     if (!Directory.Exists(str))
                     {
-                        Directory.CreateDirectory(config.getPath() + "/temp/" + str);
-                        Directory.CreateDirectory(config.getPath() + str);
+                        Directory.CreateDirectory(Config.GetPath() + "/temp/" + str);
+                        Directory.CreateDirectory(Config.GetPath() + str);
                     }
                 }
 
                 using (var wc = new WebClient())
                 {
                     wc.Proxy = null;
-                    wc.Headers[HttpRequestHeader.Authorization] = config.getAuth();
+                    wc.Headers[HttpRequestHeader.Authorization] = Config.GetAuth();
                     string mybase = Convert.ToBase64String(Encoding.UTF8.GetBytes(file));
                     wc.Headers.Add("file", mybase);
 
-                    Uri uri = new Uri(config.getIP() + "/update_build");
-                    wc.DownloadFile(uri, config.getPath() + "/temp/" + file);
+                    var uri = new Uri(Config.GetIp() + "/update_build");
+                    wc.DownloadFile(uri, Config.GetPath() + "/temp/" + file);
 
                 }
             }
 
             mainWindow.ChangeProgressBarVisibility(System.Windows.Visibility.Hidden);
-            mainWindow.changeMessageAsync("Проверка файлов");
-            foreach (var item in Directory.GetFiles(config.getPath() + "/temp/", "*", SearchOption.AllDirectories))
+            mainWindow.ChangeMessageAsync("Проверка файлов");
+            foreach (var item in Directory.GetFiles(Config.GetPath() + "/temp/", "*", SearchOption.AllDirectories))
             {
-                string newfile = (config.getPath() + item.Replace(config.getPath() + "/temp", ""));
+                string newfile = (Config.GetPath() + item.Replace(Config.GetPath() + "/temp", ""));
                 System.IO.File.Copy(item, newfile, true);
                 System.IO.File.Delete(item);
             }
 
-            System.IO.Directory.Delete(config.getPath() + "/temp/", true);
-            mainWindow.changeMessageAsync("Файлы успешно прошли проверку");
-            mainWindow.btnChange("Запустить");
+            System.IO.Directory.Delete(Config.GetPath() + "/temp/", true);
+            mainWindow.ChangeMessageAsync("Файлы успешно прошли проверку");
+            mainWindow.BtnChange("Запустить");
 
         }
 
-        public static void DownloadKKT() 
+        public static void DownloadKkt() 
         {
-            string pathexe = System.Reflection.Assembly.GetEntryAssembly().Location;
-            pathexe = pathexe.Remove(pathexe.LastIndexOf("\\"));
+            string pathexe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            pathexe = pathexe?.Remove(pathexe.LastIndexOf("\\", StringComparison.Ordinal));
             using (var wc = new WebClient())
             {
                 wc.Proxy = null;
-                wc.Headers[HttpRequestHeader.Authorization] = config.getAuth();
-                wc.DownloadFile(config.getIP() + "/update_kkt", pathexe + "\\fptr10.dll.temp");
+                wc.Headers[HttpRequestHeader.Authorization] = Config.GetAuth();
+                wc.DownloadFile(Config.GetIp() + "/update_kkt", pathexe + "\\fptr10.dll.temp");
             }
 
             if (File.Exists(pathexe + "\\fptr10.dll.temp"))

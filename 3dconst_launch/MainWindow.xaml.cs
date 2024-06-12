@@ -7,8 +7,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml.Linq;
-using IWshRuntimeLibrary;
 
 namespace _3dconst_launch
 {
@@ -23,49 +21,34 @@ namespace _3dconst_launch
     {
         public MainWindow()
         {
-            Loading loading = new Loading();
+            var loading = new Loading();
             loading.Show();
 
             InitializeComponent();
 
-            config.checkConf(this);
+            Config.CheckConf(this);
 
-            if (config.getIP() == "https://3d.e-1.ru:8000/sync")
-            {
-                LabelTest.Visibility = Visibility.Collapsed;
-            } 
-            else 
-            { 
-                LabelTest.Visibility = Visibility.Visible;
-            }
+            LabelTest.Visibility = Config.GetIp() == "https://3d.e-1.ru:8000/sync" ? Visibility.Collapsed : Visibility.Visible;
 
 
-            config.init(this);
-            checkConnect();
-            appShortcutToDesktop();
-            checklauncher();
+            Config.Init(this);
+            CheckConnect();
+            AppShortcutToDesktop();
+            Checklauncher();
 
-            init();
+            Init();
             loading.Close();
         }
 
 
-        private void appShortcutToDesktop()
+        private static void AppShortcutToDesktop()
         {
             string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             if (!System.IO.File.Exists(deskDir + "3dconst_launch"))
             {
-                string name;
-                if (config.getIP() == "https://3d.e-1.ru:8000/sync")
-                {
-                   name = "3dconst_launch";
-                }
-                else
-                {
-                   name = "3dconst_launch_test";
-                }
+                var name = Config.GetIp() == "https://3d.e-1.ru:8000/sync" ? "3dconst_launch" : "3dconst_launch_test";
 
-                using (StreamWriter writer = new StreamWriter(deskDir + "\\" + name + ".url"))
+                using (var writer = new StreamWriter(deskDir + "\\" + name + ".url"))
                 {
                     string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
                     writer.WriteLine("[InternetShortcut]");
@@ -79,15 +62,15 @@ namespace _3dconst_launch
 
 
 
-        private static void checkConnect()
+        private static void CheckConnect()
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/status");
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/status");
             req.Method = "GET";
-            req.Headers.Add("Authorization", config.getAuth());
+            req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
             try
             {
-                HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+                var res = (HttpWebResponse)req.GetResponse();
             }
             catch (WebException e)
             {
@@ -102,36 +85,32 @@ namespace _3dconst_launch
         }
 
 
-        public void checklauncher()
+        private static void Checklauncher()
         {
-            var path = System.Reflection.Assembly.GetEntryAssembly().Location;
-            MD5 md5 = MD5.Create();
-            var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path))).Replace("-", "").ToLower();
+            var path = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+            var md5 = MD5.Create();
+            var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path ?? string.Empty))).Replace("-", "").ToLower();
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/check_launcher");  
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/check_launcher");  
             req.Method = "GET";
-            req.Headers.Add("Authorization", config.getAuth());
+            req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
 
 
-            HttpWebResponse res = (HttpWebResponse)req.GetResponse();
-            var myjson = JsonSerializer.Deserialize<string>(res.GetResponseStream());
-            if (hash != myjson)
-            {/*
-                Process proc = new Process();
-                proc.StartInfo.FileName = path.Remove(path.LastIndexOf("\\"))+"/update_launcher.exe";
-                proc.Start();
-                Application.Current.Shutdown();
-                */
-            }
+            var res = (HttpWebResponse)req.GetResponse();
+            var json = JsonSerializer.Deserialize<string>(res.GetResponseStream() ?? throw new InvalidOperationException());
+            
+            if (hash == json) return;
+            
+            /*var proc = new Process();
+            proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal))+"/update_launcher.exe";
+            proc.Start();
+            Application.Current.Shutdown();*/
         }
 
 
-        public async void init()
+        private static async void Init()
         {
-
-            
-
             //CheckDiffPath();
         }
 
@@ -145,13 +124,13 @@ namespace _3dconst_launch
             await Task.Run(() => Dispatcher.Invoke(() => ProgressUpload.Visibility = value));
         }
 
-        public async void changeMessageAsync(string msg)
+        public async void ChangeMessageAsync(string msg)
         {
             await Task.Run(() => Dispatcher.Invoke(() => label_message.Content = msg));
         }
 
 
-        public async void btnChange(string value)
+        public async void BtnChange(string value)
         {
             await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
             await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = value));
@@ -169,17 +148,17 @@ namespace _3dconst_launch
             {
                 case "Загрузить":
                     Btn_download.IsEnabled = false;
-                    await Task.Run(() => download.DownloadConstruct(this, FilesData.GetServerPath()));
+                    await Task.Run(() => Download.DownloadConstruct(this, FilesData.GetServerPath()));
                     break;
 
                 case "Обновление":
                     Btn_download.IsEnabled = false;
-                    await Task.Run(() => download.DownloadConstruct(this, FilesData.checkDiffFiles()));
+                    await Task.Run(() => Download.DownloadConstruct(this, FilesData.CheckDiffFiles()));
                     break;
 
                 case "Запустить":
-                    Process proc = new Process();
-                    proc.StartInfo.FileName = config.getPath() + "/3dconst.exe";
+                    var proc = new Process();
+                    proc.StartInfo.FileName = Config.GetPath() + "/3dconst.exe";
                     proc.Start();
                     break;
             }
@@ -221,8 +200,8 @@ namespace _3dconst_launch
 
         private void btnSettings_Click(object sender, RoutedEventArgs e) 
         {
-            Settings SettingWindow = new Settings();
-            SettingWindow.Show();
+            var settingWindow = new Settings();
+            settingWindow.Show();
         }
     }
 }

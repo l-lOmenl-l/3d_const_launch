@@ -11,12 +11,13 @@ namespace _3dconst_launch
 {
     internal class Spawn
     {
-        public static Label labelAdd(string name)
+        public static Label LabelAdd(string name)
         {
-            Label label = new Label();
-            label.Foreground = new SolidColorBrush(Colors.White);
-            string temp = "";
-            Alias.alias_label.TryGetValue(name, out temp);
+            var label = new Label
+            {
+                Foreground = new SolidColorBrush(Colors.White)
+            };
+            Alias.AliasLabel.TryGetValue(name, out var temp);
             label.Content = temp + ":";
             label.HorizontalAlignment = HorizontalAlignment.Left;
             label.VerticalAlignment = VerticalAlignment.Center;
@@ -26,19 +27,21 @@ namespace _3dconst_launch
 
         public static ComboBox ComboBoxAdd(int param, string name)
         {
-            ComboBox combobox = new ComboBox();
-            combobox.Name = name;
-            combobox.Width = 140;
-            combobox.Height = 20;
-            combobox.HorizontalAlignment = HorizontalAlignment.Center;
-            combobox.VerticalAlignment = VerticalAlignment.Center;
+            var combobox = new ComboBox
+            {
+                Name = name,
+                Width = 140,
+                Height = 20,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            
             combobox.SetValue(Grid.ColumnProperty, 1);
-            foreach (KeyValuePair<int, string> item in Alias.alias_Settings_Param)
+            foreach (var item in Alias.AliasSettingsParam)
             {
                 combobox.Items.Add(item.Value);
             }
-            string temp = "";
-            Alias.alias_Settings_Param.TryGetValue(param, out temp);
+            Alias.AliasSettingsParam.TryGetValue(param, out var temp);
             combobox.SelectedItem = temp;
             return combobox;
         }

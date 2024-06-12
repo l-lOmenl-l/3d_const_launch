@@ -18,9 +18,9 @@ namespace _3dconst_launch
     /// <summary>
     /// Логика взаимодействия для UC_ProgressDownload.xaml
     /// </summary>
-    public partial class UC_ProgressDownload : UserControl
+    public partial class UcProgressDownload : UserControl
     {
-        public UC_ProgressDownload()
+        public UcProgressDownload()
         {
             InitializeComponent();
         }

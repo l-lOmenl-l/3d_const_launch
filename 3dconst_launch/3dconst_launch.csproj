@@ -62,8 +62,8 @@
     <Compile Include="UC_ProgressDownload.xaml.cs">
       <DependentUpon>UC_ProgressDownload.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SetIP.xaml.cs">
-      <DependentUpon>SetIP.xaml</DependentUpon>
+    <Compile Include="SetIp.xaml.cs">
+      <DependentUpon>SetIp.xaml</DependentUpon>
     </Compile>
     <Page Include="Loading.xaml">
       <SubType>Designer</SubType>
@@ -100,7 +100,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SetIP.xaml">
+    <Page Include="SetIp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

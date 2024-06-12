@@ -101,3 +101,45 @@ C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\UC_Progr
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Progress Download.baml
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\SetIP.g.cs
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\SetIP.baml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\3dconst_launch.exe.config
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\3dconst_launch.exe
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\3dconst_launch.pdb
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\Newtonsoft.Json.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Buffers.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Memory.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Numerics.Vectors.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Text.Encodings.Web.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Text.Json.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.Threading.Tasks.Extensions.xml
+D:\Projects\3d_const_launch\3dconst_launch\bin\Debug\System.ValueTuple.xml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.AssemblyReference.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Interop.IWshRuntimeLibrary.dll
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.ResolveComReference.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Settings.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Styles\Style.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Loading.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\MainWindow.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Progress Download.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Settings.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\UC_ProgressDownload.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\SetIp.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\App.g.cs
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch_MarkupCompile.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch_MarkupCompile.lref
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\App.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Loading.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\MainWindow.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\Progress Download.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\UC_ProgressDownload.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\SetIp.baml
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.g.resources
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\_3dconst_launch.Properties.Resources.resources
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.GenerateResource.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.CoreCompileInputs.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.Fody.CopyLocal.cache
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_.84F7ABF3.Up2Date
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.exe
+D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.pdb

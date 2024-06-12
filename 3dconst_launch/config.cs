@@ -1,60 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Interop;
-using System.Windows.Media.Animation;
-using System.Windows.Threading;
 
 
 namespace _3dconst_launch
 {
-    
-    internal class config
+    internal abstract class Config
     {
-        public static void checkConf(MainWindow mainWindow)
+        public static void CheckConf(MainWindow mainWindow)
         {
             if (!File.Exists(GetPathConfig(true)))
             {
-                createConf("");
+                CreateConf("");
             }
         }
 
-        public static string getAuth()
+        public static string GetAuth()
         {
             return "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes("3dConst" + ":" + "UdyT0epH"));   
         }
 
-        public static string getIP()
+        public static string GetIp()
         {
-            FileStream readStream = File.OpenRead(GetPathConfig(true));
+            var readStream = File.OpenRead(GetPathConfig(true));
             var result = JsonSerializer.Deserialize<Dictionary<string, string>>(readStream);
             var temp = result["ip_server"].ToString();
-            if (temp == "")
-            {
-                SetIP setIP = new SetIP();
-                setIP.ShowDialog();
-            }
+
+            if (temp != "") return temp;
+            
+            var setIp = new SetIp();
+            setIp.ShowDialog();
+            
             return temp;
         }
 
-        public static string getPath()
+        public static string GetPath()
         {
-            FileStream readStream = File.OpenRead(GetPathConfig(true));
+            var readStream = File.OpenRead(GetPathConfig(true));
             var result = JsonSerializer.Deserialize<Dictionary<string, string>>(readStream);
             var temp = result["Path_const"].ToString();
             return temp;
         }
 
-        static public string GetPathConfig(bool addfile)
+        public static string GetPathConfig(bool addFile)
         {
-            if (addfile)
+            if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Launcher_E1/"))
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Personal) +
+                                          "/Launcher_E1/");
+            }
+            
+            if (addFile)
             {
                 return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Launcher_E1/conf.json";
             }
@@ -62,10 +60,10 @@ namespace _3dconst_launch
         }
 
 
-        public static void createConf(string ip)
+        public static void CreateConf(string ip)
         {
             //await Task.Run(() => mainWindow.changeMessageAsync("Создание конфигурации"));
-            FileStream createStream = File.Create(GetPathConfig(true));
+            var createStream = File.Create(GetPathConfig(true));
 
             if (ip == "")
             {
@@ -87,9 +85,9 @@ namespace _3dconst_launch
         }
         */
 
-        public static async void init(MainWindow mainWindow)
+        public static async void Init(MainWindow mainWindow)
         {
-            getIP();
+            GetIp();
 
             if (!Directory.Exists(GetPathConfig(false)))
             {
@@ -98,33 +96,33 @@ namespace _3dconst_launch
 
             if (!File.Exists(GetPathConfig(true)))
             {
-                createConf("");
+                CreateConf("");
             }
 
-            if (Directory.Exists(getPath() + "/temp"))
+            if (Directory.Exists(GetPath() + "/temp"))
             {
-                Directory.Delete(getPath() + "/temp", true);
+                Directory.Delete(GetPath() + "/temp", true);
             }
-            mainWindow.changeMessageAsync("Проверка конфигурации");
+            mainWindow.ChangeMessageAsync("Проверка конфигурации");
 
 
             if (FilesData.GetLocalFilesData().Count > 0)
             {
-                if (!FilesData.checkFiles())
+                if (!FilesData.CheckFiles())
                 {
-                    mainWindow.changeMessageAsync("Файлы не прошли проверку, готов к обновлению");
-                    mainWindow.btnChange("Обновление");
+                    mainWindow.ChangeMessageAsync("Файлы не прошли проверку, готов к обновлению");
+                    mainWindow.BtnChange("Обновление");
                 }
                 else
                 {
-                    mainWindow.changeMessageAsync("Готов к запуску");
-                    mainWindow.btnChange("Запустить");
+                    mainWindow.ChangeMessageAsync("Готов к запуску");
+                    mainWindow.BtnChange("Запустить");
                 }
             }
             else
             {
-                mainWindow.changeMessageAsync("Конструктор не установлен, готов к загрузке");
-                mainWindow.btnChange("Загрузить");
+                mainWindow.ChangeMessageAsync("Конструктор не установлен, готов к загрузке");
+                mainWindow.BtnChange("Загрузить");
             }
 
 

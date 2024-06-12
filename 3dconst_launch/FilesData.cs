@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,17 +13,11 @@ namespace _3dconst_launch
     {
         public static Dictionary<string, string> GetLocalFilesData()
         {
-            if (Directory.Exists(config.getPath()))
+            if (Directory.Exists(Config.GetPath()))
             {
-                var result = new Dictionary<string, string>();
-
-                string[] path = Directory.GetFiles(config.getPath(), "*", SearchOption.AllDirectories);
+                string[] path = Directory.GetFiles(Config.GetPath(), "*", SearchOption.AllDirectories);
                 var md5 = MD5.Create();
-                foreach (string files in path)
-                {
-                    result.Add(files.Replace("\\", "/"), BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(files))).Replace("-", "").ToLower());
-                }
-                return result;
+                return path.ToDictionary(files => files.Replace("\\", "/"), files => BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(files))).Replace("-", "").ToLower());
             }
             else
             {
@@ -31,16 +26,16 @@ namespace _3dconst_launch
             
         }
 
-   
-        public static Dictionary<string, string> GetServerFilesData()
+
+        private static Dictionary<string, string> GetServerFilesData()
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(config.getIP() + "/MD5");
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/MD5");
             req.Method = "GET";
-            req.Headers.Add("Authorization", config.getAuth());
+            req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
-            HttpWebResponse res = (HttpWebResponse)req.GetResponse();
-            var myjson = JsonSerializer.Deserialize<Dictionary<string, string>>(res.GetResponseStream());
-            return myjson;
+            var res = (HttpWebResponse)req.GetResponse();
+            var json = JsonSerializer.Deserialize<Dictionary<string, string>>(res.GetResponseStream() ?? throw new InvalidOperationException());
+            return json;
         }
 
 
@@ -55,15 +50,14 @@ namespace _3dconst_launch
         }
 
 
-        public static List<string> checkDiffFiles()
+        public static List<string> CheckDiffFiles()
         {
             Dictionary<string, string> local = GetLocalFilesData();
             Dictionary<string, string> server = GetServerFilesData();
             List<string> upload = new List<string>();
-            List<string> delete = new List<string>();
             foreach (var file in server)
             {
-                string temp = config.getPath() + file.Key;
+                string temp = Config.GetPath() + file.Key;
                 if (!local.ContainsKey(temp))
                 {
                     upload.Add(file.Key);
@@ -78,21 +72,14 @@ namespace _3dconst_launch
                 }
             }
 
-            foreach (var file in local)
-            {
-                string temp = file.Key.Replace(config.getPath(), "");
-                if (!server.ContainsKey(temp))
-                {
-                    delete.Add(file.Key);
-                }
-            }
+            List<string> delete = (from file in local let temp = file.Key.Replace(Config.GetPath(), "") where !server.ContainsKey(temp) select file.Key).ToList();
 
-            deletefiles(delete);
+            Deletefiles(delete);
 
             return upload;
         }
 
-        private static void deletefiles(List<string> files)
+        private static void Deletefiles(List<string> files)
         {
             foreach (var file in files)
             {
@@ -101,7 +88,7 @@ namespace _3dconst_launch
         }
 
 
-        public static bool checkFiles()
+        public static bool CheckFiles()
         {
             Dictionary<string, string> local = GetLocalFilesData();
             Dictionary<string, string> server = GetServerFilesData();
@@ -109,7 +96,7 @@ namespace _3dconst_launch
 
             foreach (var file in server)
             {
-                string temp = config.getPath() + file.Key;
+                string temp = Config.GetPath() + file.Key;
                 if (!local.ContainsKey(temp))
                 {
                     return false;
@@ -124,16 +111,7 @@ namespace _3dconst_launch
                 }
             }
 
-            foreach (var file in local)
-            {
-                string temp = file.Key.Replace(config.getPath(), "");
-                if (!server.ContainsKey(temp))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return local.Select(file => file.Key.Replace(Config.GetPath(), "")).All(temp => server.ContainsKey(temp));
         }
     }
 }

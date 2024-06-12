@@ -18,9 +18,9 @@ namespace _3dconst_launch
     /// <summary>
     /// Логика взаимодействия для Progress_Download.xaml
     /// </summary>
-    public partial class Progress_Download : Window
+    public partial class ProgressDownload : Window
     {
-        public Progress_Download()
+        public ProgressDownload()
         {
             InitializeComponent();
         }

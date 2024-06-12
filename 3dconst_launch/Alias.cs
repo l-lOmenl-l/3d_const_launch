@@ -8,7 +8,7 @@ namespace _3dconst_launch
 {
     public static class Alias
     {
-        public static Dictionary<string, string> alias_IP = new Dictionary<string, string>()
+        public static readonly Dictionary<string, string> AliasIp = new Dictionary<string, string>()
         {
             ["https://3d.e-1.ru:8000/sync"] = "Рабочий сервер",
             ["https://3d-test.e-1.ru:8000/sync"] = "Тестовый сервер",
@@ -16,7 +16,7 @@ namespace _3dconst_launch
             ["http://127.0.0.1:8000/sync"] = "dev local"
         };
 
-        public static Dictionary<string, string> alias_Path_Const = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> AliasPathConst = new Dictionary<string, string>()
         {
             ["https://3d.e-1.ru:8000/sync"] = "C:\\Soft\\3dconst\\",
             ["https://3d-test.e-1.ru:8000/sync"] = "C:\\Soft\\3dconstTestOnline\\",
@@ -26,18 +26,10 @@ namespace _3dconst_launch
 
         public static string GetPathConst(string ip)
         {
-            foreach (KeyValuePair<string, string> items in Alias.alias_Path_Const)
-            {
-                if (ip == items.Key)
-                {
-                    return items.Value;
-                }
-            }
-
-            return null;
+            return (from items in Alias.AliasPathConst where ip == items.Key select items.Value).FirstOrDefault();
         }
 
-        public static string[] listSettingsParams = new string[]
+        public static readonly string[] ListSettingsParams = new string[]
                 {
                 "ViewDistanceQuality",
                 "AntiAliasingQuality",
@@ -48,7 +40,7 @@ namespace _3dconst_launch
                 "ShadingQuality",
                 };
 
-        public static Dictionary<int, string> alias_Settings_Param = new Dictionary<int, string>()
+        public static readonly Dictionary<int, string> AliasSettingsParam = new Dictionary<int, string>()
         {
             [0] = "Низко",
             [1] = "Средне",
@@ -57,7 +49,7 @@ namespace _3dconst_launch
             [4] = "Синематик",
         };
 
-        public static Dictionary<string, string> alias_label = new Dictionary<string, string>()
+        public static readonly Dictionary<string, string> AliasLabel = new Dictionary<string, string>()
         {
             ["ViewDistanceQuality"] = "Дальность",
             ["AntiAliasingQuality"] = "Сглаживание",

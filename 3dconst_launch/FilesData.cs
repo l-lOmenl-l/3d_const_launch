@@ -11,6 +11,31 @@ namespace _3dconst_launch
 {
     internal class FilesData
     {
+        public static float getDownloadSizes()
+        {
+            string[] path = Directory.GetFiles(Config.GetPath()+ "/temp", "*", SearchOption.AllDirectories);
+            float sum = 0;
+            foreach (string temp in path)
+            {
+                System.IO.FileInfo file = new System.IO.FileInfo(temp);
+                sum += file.Length;
+            }
+            
+            return sum * (float)Math.Pow(10, -3) / 1000;
+        }
+
+        public static float getDownloadFileCount()
+        {
+            string[] path = Directory.GetFiles(Config.GetPath()+"/temp", "*", SearchOption.AllDirectories);
+            float sum = 0;
+            foreach (string temp in path)
+            {
+                sum += 1;
+            }
+
+            return sum;
+        }
+
         public static Dictionary<string, string> GetLocalFilesData()
         {
             if (Directory.Exists(Config.GetPath()))
@@ -26,48 +51,53 @@ namespace _3dconst_launch
             
         }
 
-
-        private static Dictionary<string, string> GetServerFilesData()
+        public class FileInfo
         {
-            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/MD5");
+            public float size { get; set; }
+            public string hash { get; set; }
+        }
+
+        private static Dictionary<string, FileInfo> GetServerFilesData()
+        {
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/sync" + "/MD5");
             req.Method = "GET";
             req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
             var res = (HttpWebResponse)req.GetResponse();
-            var json = JsonSerializer.Deserialize<Dictionary<string, string>>(res.GetResponseStream() ?? throw new InvalidOperationException());
+            var json = JsonSerializer.Deserialize<Dictionary<string, FileInfo>>(res.GetResponseStream() ?? throw new InvalidOperationException());
             return json;
         }
 
 
-        public static List<string> GetServerPath()
+        public static Dictionary<string, float> GetServerPath()
         {
-            List<string> path = new List<string>();
+            var path = new Dictionary<string, float> ();
             foreach (var obj in GetServerFilesData())
             {
-                path.Add(obj.Key);
+                path[obj.Key] = obj.Value.size;
             }
             return path;
         }
 
 
-        public static List<string> CheckDiffFiles()
+        public static Dictionary<string, float> CheckDiffFiles()
         {
             Dictionary<string, string> local = GetLocalFilesData();
-            Dictionary<string, string> server = GetServerFilesData();
-            List<string> upload = new List<string>();
+            Dictionary<string, FileInfo> server = GetServerFilesData();
+            var upload = new Dictionary<string, float>();
             foreach (var file in server)
             {
                 string temp = Config.GetPath() + file.Key;
                 if (!local.ContainsKey(temp))
                 {
-                    upload.Add(file.Key);
+                    upload[temp.Replace(Config.GetPath(),"")] = file.Value.size;
                 }
                 else
                 {
                     local.TryGetValue(temp, out var temp2);
-                    if (temp2 != file.Value)
+                    if (temp2 != file.Value.hash)
                     {
-                        upload.Add(file.Key.Replace("\\", "/"));
+                        upload[file.Key.Replace("\\", "/").Replace(Config.GetPath(), "")] = file.Value.size;
                     }
                 }
             }
@@ -91,12 +121,12 @@ namespace _3dconst_launch
         public static bool CheckFiles()
         {
             Dictionary<string, string> local = GetLocalFilesData();
-            Dictionary<string, string> server = GetServerFilesData();
+            Dictionary<string, FileInfo> server = GetServerFilesData();
 
 
             foreach (var file in server)
             {
-                string temp = Config.GetPath() + file.Key;
+                string temp = (Config.GetPath() + file.Key);
                 if (!local.ContainsKey(temp))
                 {
                     return false;
@@ -104,13 +134,12 @@ namespace _3dconst_launch
                 else
                 {
                     local.TryGetValue(temp, out var temp2);
-                    if (temp2 != file.Value)
+                    if (temp2 != file.Value.hash)
                     {
                         return false;
                     }
                 }
             }
-
             return local.Select(file => file.Key.Replace(Config.GetPath(), "")).All(temp => server.ContainsKey(temp));
         }
     }

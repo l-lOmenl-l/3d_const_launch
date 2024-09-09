@@ -61,3 +61,20 @@ C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\3dcons
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\3dconst_launch.csproj.CopyComplete
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\3dconst_launch.exe
 C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\3dconst_launch.pdb
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\bin\Release\Newtonsoft.Json.xml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Settings.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Styles\Style.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Loading.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Progress Download.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Settings.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\UC_ProgressDownload.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\SetIp.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\App.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Loading.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Progress Download.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\UC_ProgressDownload.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\SetIp.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Auth.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Welcome.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Auth.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Release\Welcome.baml

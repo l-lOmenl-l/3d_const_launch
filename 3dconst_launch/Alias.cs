@@ -10,18 +10,18 @@ namespace _3dconst_launch
     {
         public static readonly Dictionary<string, string> AliasIp = new Dictionary<string, string>()
         {
-            ["https://3d.e-1.ru:8000/sync"] = "Рабочий сервер",
-            ["https://3d-test.e-1.ru:8000/sync"] = "Тестовый сервер",
-            ["http://192.168.40.135:8000/sync"] = "dev",
-            ["http://127.0.0.1:8000/sync"] = "dev local"
+            ["https://3d.e-1.ru:8000"] = "Рабочий сервер",
+            ["https://3d-test.e-1.ru:8000"] = "Тестовый сервер",
+            ["http://192.168.40.135:8000"] = "dev",
+            ["http://127.0.0.1:8000"] = "dev local"
         };
 
         private static readonly Dictionary<string, string> AliasPathConst = new Dictionary<string, string>()
         {
-            ["https://3d.e-1.ru:8000/sync"] = "C:\\Soft\\3dconst\\",
-            ["https://3d-test.e-1.ru:8000/sync"] = "C:\\Soft\\3dconstTestOnline\\",
-            ["http://192.168.40.135:8000/sync"] = "C:\\Soft\\3dconstTest\\",
-            ["http://127.0.0.1:8000/sync"] = "C:\\Soft\\3dconstLocal"
+            ["https://3d.e-1.ru:8000"] = "C:/Soft/3dconst",
+            ["https://3d-test.e-1.ru:8000"] = "C:/Soft/3dconstTestOnline",
+            ["http://192.168.40.135:8000"] = "C:/Soft/3dconstTest",
+            ["http://127.0.0.1:8000"] = "C:/Soft/3dconstLocal"
         };
 
         public static string GetPathConst(string ip)

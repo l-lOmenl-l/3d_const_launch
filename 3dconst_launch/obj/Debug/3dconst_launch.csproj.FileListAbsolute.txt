@@ -143,3 +143,9 @@ D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.csproj.Fody.
 D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_.84F7ABF3.Up2Date
 D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.exe
 D:\Projects\3d_const_launch\3dconst_launch\obj\Debug\3dconst_launch.pdb
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Welcome.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Welcome.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Auth.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Auth.baml
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Circular.g.cs
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\obj\Debug\Circular.baml

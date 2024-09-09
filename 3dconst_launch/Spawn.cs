@@ -25,6 +25,51 @@ namespace _3dconst_launch
             return label;
         }
 
+        public static Label InfoLabelAdd(string message)
+        {
+            var label = new Label
+            {
+                Foreground = new SolidColorBrush(Colors.White)
+            };
+
+            label.Content = message;
+            label.HorizontalAlignment = HorizontalAlignment.Center;
+            label.VerticalAlignment = VerticalAlignment.Center;
+            return label;
+        }
+
+        public struct parametersButton{
+            public string msg {  get; set; }
+            public int width { get; set; }
+            public int heigth { get; set; }
+
+            public int FontSize { get; set; }
+
+            public HorizontalAlignment horizontalAligment { get; set; }
+            public VerticalAlignment verticalAlignment { get; set;}
+
+            public RoutedEventHandler RoutedEvent { get; set; }
+
+        }
+
+        public static Button ButtonAdd(parametersButton param)
+        {
+            var button = new Button
+            {
+                Name = "DynamicButton",
+                Content = param.msg,
+                FontSize = param.FontSize,
+                Width = param.width,
+                Height = param.heigth,
+                HorizontalAlignment = param.horizontalAligment,
+                VerticalAlignment = param.verticalAlignment 
+            };
+            button.Click += param.RoutedEvent;
+            
+            return button;
+        }
+
+
         public static ComboBox ComboBoxAdd(int param, string name)
         {
             var combobox = new ComboBox
@@ -33,9 +78,16 @@ namespace _3dconst_launch
                 Width = 140,
                 Height = 20,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
             };
-            
+
+
+            Style customStyle = (Style)Application.Current.FindResource("ComboBoxStyle1");
+
+            // Применение стиля к ComboBox
+            combobox.Style = customStyle;
+            combobox.HorizontalContentAlignment = HorizontalAlignment.Center;
+            combobox.VerticalContentAlignment = VerticalAlignment.Center;
             combobox.SetValue(Grid.ColumnProperty, 1);
             foreach (var item in Alias.AliasSettingsParam)
             {
@@ -44,6 +96,16 @@ namespace _3dconst_launch
             Alias.AliasSettingsParam.TryGetValue(param, out var temp);
             combobox.SelectedItem = temp;
             return combobox;
+        }
+
+        public static Circular CircularAdd(string msg)
+        {
+            Circular circular = new Circular(msg);
+            circular.Name = "dynamicCircular";
+            circular.HorizontalAlignment = HorizontalAlignment.Stretch;
+            circular.VerticalAlignment = VerticalAlignment.Stretch;
+            circular.SetValue(Grid.RowSpanProperty, 2);
+            return circular;
         }
     }
 }

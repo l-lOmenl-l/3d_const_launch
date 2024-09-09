@@ -39,13 +39,15 @@
                     <GradientStop Color="#1b1448" Offset="0.75"/>
                 </LinearGradientBrush>
             </Border.Background>
-
-            <Grid>
-
-                <Grid.RowDefinitions>
+            <Grid x:Name="MainGrid" IsEnabled="False">
+            <Grid x:Name="SecondGrid">
+                    <Grid.Effect>
+                        <BlurEffect Radius="0"/>
+                    </Grid.Effect>
+                    <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                     <RowDefinition/>
-                    <RowDefinition Height="70" />
+                    <RowDefinition Height="100" />
                 </Grid.RowDefinitions>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -101,7 +103,7 @@
                 </Grid>
 
             
-                 <StackPanel Width="250" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0,35,0,0">
+                 <StackPanel x:Name="SP_Center" Width="250" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0,35,0,0">
                     <Image Source="/images/logo.png" Width="100" Height="100" Stretch="Fill"/>
                     <TextBlock Text="Шкафы-купе" 
                                HorizontalAlignment="Center" 
@@ -133,16 +135,18 @@
                                      >
 
                         </ProgressBar>
-
-                        <Label x:Name="label_message"
-                            Grid.Row="1"
-                               Content="{Binding ChangeLabelContent}"
-                               Foreground="White"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center"
-                               FontSize="16"
-                               FontFamily="Amiri"
-                               Margin="0,0,20,0"/>
+                        <TextBlock x:Name="label_message"
+                                   Grid.Row="1"
+                                   Text=""
+                                   Foreground="White"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   MaxWidth="500"
+                                   MaxHeight="300"
+                                   FontSize="12"
+                                   FontFamily="Amiri"
+                                   Margin="0,0,20,0"
+                                   TextWrapping="Wrap"/>
                     </Grid>
                    
                     <Button x:Name="Btn_download"
@@ -168,10 +172,10 @@
                     </Button>
                 </Grid>
             </Grid>
-        
-        
-        
-    </Border>
+            </Grid>
+
+
+        </Border>
     </Border>
     
     

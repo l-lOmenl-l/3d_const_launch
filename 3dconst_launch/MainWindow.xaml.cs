@@ -4,9 +4,12 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Effects;
 
 namespace _3dconst_launch
 {
@@ -19,36 +22,77 @@ namespace _3dconst_launch
 
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(string ip)
         {
-            var loading = new Loading();
-            loading.Show();
-
             InitializeComponent();
-
-            Config.CheckConf(this);
-
-            LabelTest.Visibility = Config.GetIp() == "https://3d.e-1.ru:8000/sync" ? Visibility.Collapsed : Visibility.Visible;
-
-
-            Config.Init(this);
-            CheckConnect();
-            AppShortcutToDesktop();
-            Checklauncher();
-
-            Init();
-            loading.Close();
+            Config.ip = ip;
+            this.Loaded += MainWindow_Loaded;
         }
 
+        private async void MainWindow_Loaded(object sender, EventArgs e)
+        {
+           await Init();
+        }
+
+        public Circular CreateLoadingCircular(string msg)
+        {
+            SecondGrid.Effect = new BlurEffect { Radius = 10 };
+            Circular circular = Spawn.CircularAdd(msg);
+            MainGrid.RegisterName(circular.Name, circular);
+            MainGrid.Children.Add(circular);
+            MainGrid.IsEnabled = false;
+            return circular;
+        }
+
+        public void DestroyLoadingCircular()
+        {
+            Circular circular = (Circular)MainGrid.FindName("dynamicCircular");
+            MainGrid.UnregisterName(circular.Name);
+            MainGrid.Children.Remove(circular);
+            MainGrid.IsEnabled = true;
+            SecondGrid.Effect = new BlurEffect { Radius = 0 };
+        }
+
+        public void ChangeMsgLoadingCircular(string msg)
+        {
+            Circular circular = (Circular)MainGrid.FindName("dynamicCircular");
+            circular.ChangeMessage(msg);
+        }
+
+        public async void ChangeMsgLoadingCircularAsync(string msg)
+        {
+            await Task.Run(() => Dispatcher.Invoke(() => ChangeMsgLoadingCircular(msg)));
+        }
+
+
+
+        private Task Init()
+        {
+            CreateLoadingCircular("Инициализация");
+           
+            Alias.AliasIp.TryGetValue(Config.ip, out var outTemp);
+            LabelTest.Content = outTemp;
+
+            AppShortcutToDesktop();
+            Config.Init(this);
+
+            ChangeMsgLoadingCircular("Проверка обновлений лаунчера");
+            Checklauncher();
+
+            /*
+            newcircular.ChangeMessage("Проверка обновлений конструктора");
+            FilesData.CheckDiffFiles();
+            */
+            DestroyLoadingCircular();
+            return Task.CompletedTask;
+        }
 
         private static void AppShortcutToDesktop()
         {
             string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             if (!System.IO.File.Exists(deskDir + "3dconst_launch"))
             {
-                var name = Config.GetIp() == "https://3d.e-1.ru:8000/sync" ? "3dconst_launch" : "3dconst_launch_test";
-
-                using (var writer = new StreamWriter(deskDir + "\\" + name + ".url"))
+                using (var writer = new StreamWriter(deskDir + "\\3dconst_launch.url"))
                 {
                     string app = System.Reflection.Assembly.GetExecutingAssembly().Location;
                     writer.WriteLine("[InternetShortcut]");
@@ -84,14 +128,15 @@ namespace _3dconst_launch
             }
         }
 
+        
 
-        private static void Checklauncher()
+        private void Checklauncher()
         {
             var path = System.Reflection.Assembly.GetEntryAssembly()?.Location;
             var md5 = MD5.Create();
             var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path ?? string.Empty))).Replace("-", "").ToLower();
 
-            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/check_launcher");  
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/sync" + "/check_launcher");  
             req.Method = "GET";
             req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
@@ -101,18 +146,47 @@ namespace _3dconst_launch
             var json = JsonSerializer.Deserialize<string>(res.GetResponseStream() ?? throw new InvalidOperationException());
             
             if (hash == json) return;
-            
-            /*var proc = new Process();
+
+            SP_Center.Children.Add(Spawn.InfoLabelAdd("Доступно обновление лаунчера"));
+            var btn_param = new Spawn.parametersButton
+            {
+                msg = "Обновить лаунчер",
+                heigth = 35,
+                width = 135,
+                FontSize = 14,
+                horizontalAligment = HorizontalAlignment.Center,
+                verticalAlignment = VerticalAlignment.Center,
+                RoutedEvent = DownloadLauncher_Click
+            };
+            Button btn = Spawn.ButtonAdd(btn_param);
+            SP_Center.Children.Add(btn);
+            btn.Style = (Style)FindResource("ButtonSettings");
+            btn.Template = (ControlTemplate)FindResource("CornerButton");
+            btn.DataContext = "9";
+            /*
+            var proc = new Process();
             proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal))+"/update_launcher.exe";
             proc.Start();
-            Application.Current.Shutdown();*/
+            Application.Current.Shutdown();
+            */
         }
 
-
-        private static async void Init()
+        private async void DownloadLauncher_Click(object sender, RoutedEventArgs e)
         {
-            //CheckDiffPath();
+            CreateLoadingCircular("Загрузка лаунчера");
+            await Download.DownloadLauncher();
+            ChangeMsgLoadingCircular("Через 3 секунды лаунчер будет перезапущен.");
+            File.Copy(".\\temp\\3dconst_launch.exe", ".\\3dconst_launch.exe.temp");
+            Thread.Sleep(3000);
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "cmd.exe";
+            psi.Arguments = $"/c TIMEOUT /T 1 /NOBREAK && del 3dconst_launch.exe && move 3dconst_launch.exe.temp 3dconst_launch.exe && start 3dconst_launch.exe";
+            await Task.Run(() => Dispatcher.Invoke(() => Process.Start(psi)));
+            AppClose();
         }
+
+
+
 
         public async void ChangeProgressBatAsync(float value)
         {
@@ -126,7 +200,7 @@ namespace _3dconst_launch
 
         public async void ChangeMessageAsync(string msg)
         {
-            await Task.Run(() => Dispatcher.Invoke(() => label_message.Content = msg));
+            await Task.Run(() => Dispatcher.Invoke(() => label_message.Text = msg));
         }
 
 
@@ -147,8 +221,10 @@ namespace _3dconst_launch
             switch (Btn_download.Content)
             {
                 case "Загрузить":
+                    CreateLoadingCircular("Скачивание");
                     Btn_download.IsEnabled = false;
                     await Task.Run(() => Download.DownloadConstruct(this, FilesData.GetServerPath()));
+                    DestroyLoadingCircular();
                     break;
 
                 case "Обновление":
@@ -157,9 +233,41 @@ namespace _3dconst_launch
                     break;
 
                 case "Запустить":
-                    var proc = new Process();
-                    proc.StartInfo.FileName = Config.GetPath() + "/3dconst.exe";
-                    proc.Start();
+                    string parameters = "-url="+Config.ip;
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        //FileName = Config.GetPath() + "/3dconst.exe",
+                        
+                        FileName = "C:\\Soft\\3dconstLocal\\3dconst.exe",
+                        Arguments = parameters,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    try
+                    {
+                        using (Process process = Process.Start(startInfo))
+                        {
+                            // Чтение стандартного вывода и ошибок
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error = process.StandardError.ReadToEnd();
+
+                            process.WaitForExit();
+
+                            // Вывод результатов
+                            Console.WriteLine("Output:");
+                            Console.WriteLine(output);
+                            Console.WriteLine("Error:");
+                            Console.WriteLine(error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Exception: {ex.Message}");
+                    }
                     break;
             }
 
@@ -169,21 +277,21 @@ namespace _3dconst_launch
 
         public void const_actual()
         {
-            label_message.Content = "Actual";
+            label_message.Text = "Actual";
         }
 
         public void const_update()
         {
-            label_message.Content = "update";
+            label_message.Text = "update";
         }
 
         public void const_download()
         {
-            label_message.Content = "Готов к загрузке";
+            label_message.Text = "Готов к загрузке";
             Btn_download.Content = "Загрузить";
         }
 
-        public void ChangeMessage(string msg) => label_message.Content = msg;
+        public void ChangeMessage(string msg) => label_message.Text = msg;
 
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

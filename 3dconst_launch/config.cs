@@ -7,15 +7,13 @@ using System.Text.Json;
 
 namespace _3dconst_launch
 {
+    
+
+
+
     internal abstract class Config
     {
-        public static void CheckConf(MainWindow mainWindow)
-        {
-            if (!File.Exists(GetPathConfig(true)))
-            {
-                CreateConf("");
-            }
-        }
+        public static string ip;
 
         public static string GetAuth()
         {
@@ -24,24 +22,12 @@ namespace _3dconst_launch
 
         public static string GetIp()
         {
-            var readStream = File.OpenRead(GetPathConfig(true));
-            var result = JsonSerializer.Deserialize<Dictionary<string, string>>(readStream);
-            var temp = result["ip_server"].ToString();
-
-            if (temp != "") return temp;
-            
-            var setIp = new SetIp();
-            setIp.ShowDialog();
-            
-            return temp;
+            return ip;
         }
 
         public static string GetPath()
         {
-            var readStream = File.OpenRead(GetPathConfig(true));
-            var result = JsonSerializer.Deserialize<Dictionary<string, string>>(readStream);
-            var temp = result["Path_const"].ToString();
-            return temp;
+            return Alias.GetPathConst(ip);
         }
 
         public static string GetPathConfig(bool addFile)
@@ -60,44 +46,8 @@ namespace _3dconst_launch
         }
 
 
-        public static void CreateConf(string ip)
+        public static void Init(MainWindow mainWindow)
         {
-            //await Task.Run(() => mainWindow.changeMessageAsync("Создание конфигурации"));
-            var createStream = File.Create(GetPathConfig(true));
-
-            if (ip == "")
-            {
-                ip = "https://3d.e-1.ru:8000/sync";
-            }
-
-            var configs = new { Path_const = Alias.GetPathConst(ip), ip_server = ip };
-                
-
-            JsonSerializer.Serialize(createStream, configs);
-            createStream.Dispose();
-        }
-
-        /*
-        static public void readConf()
-        {
-            FileStream readStream = File.OpenRead(GetPathConfig(true));
-            conf = JsonSerializer.Deserialize<Conf>(readStream);
-        }
-        */
-
-        public static async void Init(MainWindow mainWindow)
-        {
-            GetIp();
-
-            if (!Directory.Exists(GetPathConfig(false)))
-            {
-                Directory.CreateDirectory(GetPathConfig(false));
-            }
-
-            if (!File.Exists(GetPathConfig(true)))
-            {
-                CreateConf("");
-            }
 
             if (Directory.Exists(GetPath() + "/temp"))
             {
@@ -125,22 +75,6 @@ namespace _3dconst_launch
                 mainWindow.BtnChange("Загрузить");
             }
 
-
-
-
-            /*
-            if (conf.GetLocalVersion() == "none")
-            {
-                mainWindow.changeMessageAsync("Конструктор не установлен, готов к загрузке");
-                mainWindow.const_download();
-            } 
-            */
-
-
         }
-
-
-
-
     }
 }

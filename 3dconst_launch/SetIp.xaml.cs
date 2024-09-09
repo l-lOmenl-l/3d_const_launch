@@ -33,7 +33,9 @@ namespace _3dconst_launch
                 newIp = item.Key;
             }    
             File.Delete(Config.GetPathConfig(true));
+            /*
             Config.CreateConf(newIp);
+            */
             var path = GetEntryAssembly()?.Location;
             Process proc = new Process();
             proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal)) + "/3dconst_launch.exe";

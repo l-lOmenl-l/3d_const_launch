@@ -24,6 +24,5 @@ namespace _3dconst_launch
             InitializeComponent();
         }
 
-
     }
 }

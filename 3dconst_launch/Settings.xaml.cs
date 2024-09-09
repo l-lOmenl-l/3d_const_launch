@@ -31,16 +31,6 @@ namespace _3dconst_launch
         private void Init()
         {
             var ip = Config.GetIp();
-            foreach (var items in Alias.AliasIp)
-            {
-                CB_IP.Items.Add(items.Value);
-                if (ip != items.Key) continue;
-                CB_IP.SelectionChanged -= CB_IP_SelectionChanged;
-                CB_IP.SelectedItem = items.Value;
-                CB_IP.SelectionChanged += CB_IP_SelectionChanged;
-            }
-
-
 
             var lines = File.ReadLines(GetPathConf() + "\\GameUserSettings.ini");
             foreach (KeyValuePair<string, int> entry in InitSettings())
@@ -115,10 +105,10 @@ namespace _3dconst_launch
             File.Move(GetPathConf() + "\\GameUserSettings.tmp", GetPathConf() + "\\GameUserSettings.ini");
 
         }
-
+        /*
         private void CB_IP_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var result = MessageBox.Show("sure?", "Change IP?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Вы уверены?", "Изменить IP?", MessageBoxButton.YesNo, MessageBoxImage.Question);
             switch (result)
             {
                 case MessageBoxResult.Yes:
@@ -129,7 +119,8 @@ namespace _3dconst_launch
                         newIp = item.Key;
                     }    
                     File.Delete(Config.GetPathConfig(true));
-                    Config.CreateConf(newIp);
+                        
+                    //Config.CreateConf(newIp);
                     var path = System.Reflection.Assembly.GetEntryAssembly()?.Location;
                     var proc = new Process();
                     proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal)) + "/3dconst_launch.exe";
@@ -141,7 +132,7 @@ namespace _3dconst_launch
                     break;
             }
         }
-
+        */
         private void DownloadKKT_Click(object sender, RoutedEventArgs e)
         {
             Download.DownloadKkt();

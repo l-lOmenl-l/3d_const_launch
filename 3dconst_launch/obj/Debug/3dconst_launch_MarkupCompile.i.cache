@@ -9,12 +9,12 @@ _3dconst_launch
 none
 false
 DEBUG;TRACE
-C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\App.xaml
-10-90799432
+C:\Users\User\Documents\GitHub\3d_const_launch\3dconst_launch\Views\App.xaml
+10-1918932652
 
-19-1816227084
-1331659511344
-Auth.xaml;Circular.xaml;Loading.xaml;MainWindow.xaml;Progress Download.xaml;SetIp.xaml;Settings.xaml;Styles\Style.xaml;UC_ProgressDownload.xaml;Welcome.xaml;
+18-973188568
+1001619037710
+Styles\Style_new.xaml;Views\Auth.xaml;Views\new\Auth_new.xaml;Views\new\Welcome_New.xaml;Views\Widget\Circular.xaml;Views\Loading.xaml;Views\MainWindow.xaml;Views\Settings.xaml;Styles\Style.xaml;Views\Welcome.xaml;
 
 True
 

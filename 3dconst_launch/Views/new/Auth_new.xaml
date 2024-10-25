@@ -1,0 +1,102 @@
+﻿<Window x:Class="_3dconst_launch.Views.new.Auth_new"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:_3dconst_launch.Views.new"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True"
+        Title="E1" 
+        Height="471" 
+        Width="410" 
+        Icon="/images/logoBorder.png"
+        Style="{StaticResource MaterialDesignWindow}" Cursor="">
+    <Border CornerRadius="10" BorderThickness="2" Background="#111111" >
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border Margin="20,5,20,0"
+                Padding="5,5,5,15"
+                Height="50"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                BorderThickness="0,0,0,1"
+                BorderBrush="White">
+                <Grid Cursor="Hand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="/images/logo_new.png"
+                       Height="28"
+                       Width="90"
+                       HorizontalAlignment="Left"
+                       Cursor="Arrow"
+                       Grid.Column="0"/>
+
+                    <Button Style="{StaticResource ButtonMin}" 
+                        Content="{materialDesign:PackIcon Kind=WindowMinimize}"
+                        BorderThickness="0"
+                        DataContext="0"
+                        Width="20"
+                        Height="10"
+                        Template="{StaticResource CornerButton}"
+                        Grid.Column="2" Cursor="Hand">
+                    </Button>
+
+                    <Button Style="{StaticResource ButtonMin}" 
+                        BorderThickness="0"
+                        Content="{materialDesign:PackIcon Kind=Close}"
+                        DataContext="0"
+                        Template="{StaticResource CornerButton}"
+                        Grid.Column="3" Cursor="Hand">
+                    </Button>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="1" 
+                        Margin="20,10,20,10"
+                        Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="AccountCheckOutline"
+                                             Height="25" Width="25"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Foreground="White"/>
+
+                    <TextBlock Text="Авторизация"
+                               Foreground="White"
+                               FontFamily="Manrope"
+                               FontSize="20"
+                               Margin="5,0,0,0"/>
+
+                </StackPanel>
+
+                <TextBlock Text="Чтобы войти в администратора введите логин и пароль!"
+                           Margin="0,10,0,0"
+                           Foreground="#D1D1D1"
+                           FontSize="14"
+                           TextWrapping="Wrap"
+                           FontFamily="Manrope"/>
+
+            </StackPanel>
+
+
+
+        </Grid>
+
+    </Border>
+</Window>

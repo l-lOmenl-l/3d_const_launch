@@ -68,6 +68,9 @@
     <Compile Include="Views\Auth.xaml.cs">
       <DependentUpon>Auth.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\new\Auth_new.xaml.cs">
+      <DependentUpon>Auth_new.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\new\Welcome_New.xaml.cs">
       <DependentUpon>Welcome_New.xaml</DependentUpon>
     </Compile>
@@ -89,6 +92,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Auth.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\new\Auth_new.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

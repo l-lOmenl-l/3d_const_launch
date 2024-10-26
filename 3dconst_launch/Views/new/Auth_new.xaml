@@ -85,12 +85,43 @@
 
                 </StackPanel>
 
-                <TextBlock Text="Чтобы войти в администратора введите логин и пароль!"
+                <TextBlock Text="Чтобы войти под ролью администратора введите логин и пароль!"
                            Margin="0,10,0,0"
                            Foreground="#D1D1D1"
                            FontSize="14"
                            TextWrapping="Wrap"
                            FontFamily="Manrope"/>
+
+				<TextBlock Text="Логин"
+		                   Margin="0,20,0,0"
+		                   Foreground="#D1D1D1"
+		                   FontSize="10"
+		                   TextWrapping="Wrap"
+		                   FontFamily="Manrope"/>
+
+				<TextBox x:Name="LoginTextBox"
+                         Margin="0,10,0,0"
+						 Foreground="White"
+						 Background="#1A1A1A"
+						 Height="40"
+                         materialDesign:HintAssist.Hint="Введите логин">
+				</TextBox>
+
+                <TextBlock Text="Пароль"
+		                   Margin="0,20,0,0"
+		                   Foreground="#D1D1D1"
+		                   FontSize="10"
+		                   TextWrapping="Wrap"
+		                   FontFamily="Manrope"/>
+
+                <PasswordBox materialDesign:HintAssist.Hint="Password"
+                             materialDesign:PasswordBoxAssist.Password="{Binding Password1, Mode=TwoWay}"
+                             materialDesign:TextFieldAssist.HasClearButton="True"
+                             Foreground="White"
+                             Background="#1A1A1A"
+                             Height="40"
+                             Style="{StaticResource MaterialDesignRevealPasswordBox}" />
+
 
             </StackPanel>
 

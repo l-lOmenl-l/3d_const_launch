@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:_3dconst_launch"
-             StartupUri="new/Welcome_new.xaml">
+             StartupUri="Welcome.xaml">
     <Application.Resources>
         <!-- Подключение основных ресурсов Material Design -->
         <ResourceDictionary>
@@ -12,8 +12,8 @@
                 <ResourceDictionary Source="../Styles/Style_new.xaml" />
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
 
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign2.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        </ResourceDictionary>   
     </Application.Resources>
 </Application>

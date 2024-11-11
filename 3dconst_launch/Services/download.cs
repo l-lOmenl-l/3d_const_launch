@@ -1,5 +1,6 @@
 ﻿using IWshRuntimeLibrary;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace _3dconst_launch
 {
@@ -26,7 +28,10 @@ namespace _3dconst_launch
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                mainWindow.ChangeMsgLoadingCircularAsync("Скачивается файл " + FilesData.getDownloadFileCount() + " из " + files.Count() + "\r\n" + "Общий размер файлов: " + (int)calc_AllSize(files) / 1000 + " МБ, Скачано: " + (int)FilesData.getDownloadSizes() + " МБ");
+                int downloadSize = (int)FilesData.getDownloadSizes();
+                int allSize = (int)calc_AllSize(files) / 1000;
+                float percent = (float)((float)downloadSize / (float)allSize * 100.0);
+                mainWindow.ChangeMsgLoadingCircularAsync("Скачано: " + downloadSize + " МБ из " + allSize + " МБ", percent);
                 try
                 {
                     await Task.Delay(1000, cancellationToken);
@@ -50,7 +55,6 @@ namespace _3dconst_launch
 
             CancellationTokenSource cts = new CancellationTokenSource();
             Task countingTask = CalculationDonwloadSize(mainWindow, files, cts.Token);
-            // TODO: Переписать синтаксис на .net framework 4.6.2 - Выполнено. Нужно протестить
 
             foreach (var fileWithIndex in files.Select((value, i) => new { File = value, Index = i }))
             {
@@ -83,7 +87,6 @@ namespace _3dconst_launch
 
             cts.Cancel();
 
-            mainWindow.ChangeProgressBarVisibility(System.Windows.Visibility.Hidden);
             mainWindow.ChangeMessageAsync("Проверка файлов");
             foreach (var item in Directory.GetFiles(Config.GetPath() + "/temp/", "*", SearchOption.AllDirectories))
             {
@@ -94,9 +97,9 @@ namespace _3dconst_launch
 
             System.IO.Directory.Delete(Config.GetPath() + "/temp/", true);
 
-            mainWindow.ChangeMessageAsync("Файлы успешно прошли проверку");
-            mainWindow.BtnChange("Запустить");
-            
+            //mainWindow.ChangeMessageAsync("Файлы успешно прошли проверку");
+            //mainWindow.BtnChange("Запустить");
+            mainWindow.ActualConst();
 
         }
 
@@ -104,11 +107,12 @@ namespace _3dconst_launch
         {
             string pathexe = System.Reflection.Assembly.GetEntryAssembly()?.Location;
             pathexe = pathexe?.Remove(pathexe.LastIndexOf("\\", StringComparison.Ordinal));
+
             using (var wc = new WebClient())
             {
                 wc.Proxy = null;
                 wc.Headers[HttpRequestHeader.Authorization] = Config.GetAuth();
-                wc.DownloadFile(Config.GetIp() + "/update_kkt", pathexe + "\\fptr10.dll.temp");
+                wc.DownloadFile(Config.GetIp() + "/sync/update_kkt", pathexe + "\\fptr10.dll.temp");
             }
 
             if (System.IO.File.Exists(pathexe + "\\fptr10.dll.temp"))
@@ -130,7 +134,20 @@ namespace _3dconst_launch
 
         }
 
-        public static Task DownloadLauncher()
+
+        private static async void test(MainWindow mainWindow)
+        {
+            mainWindow.ChangeMsgLoadingCircular("Через 3 секунды лаунчер будет перезапущен.", 0);
+            System.IO.File.Copy(".\\temp\\3dconst_launch.exe", ".\\3dconst_launch.exe.temp");
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "cmd.exe";
+            psi.Arguments = $"/c TIMEOUT /T 1 /NOBREAK && del 3dconst_launch.exe && move 3dconst_launch.exe.temp 3dconst_launch.exe && start 3dconst_launch.exe";
+            await Task.Run(() => mainWindow.Dispatcher.Invoke(() => Process.Start(psi)));
+            mainWindow.AppClose();
+        }
+
+
+        public static bool DownloadLauncher(MainWindow mainWindow)
         {
             if (Directory.Exists("temp"))
             {
@@ -142,20 +159,22 @@ namespace _3dconst_launch
                 Directory.CreateDirectory("temp");
             }
 
-            Uri uri = new Uri(Config.GetIp() + "/sync");
+
+
+            Uri uri = new Uri(Config.GetIp() + "/sync/update_launcher");
             using (var wc = new WebClient())
             {
                 wc.Proxy = null;
                 wc.Headers[HttpRequestHeader.Authorization] = Config.GetAuth();
                 string pathexe = System.Reflection.Assembly.GetEntryAssembly().Location;
                 pathexe = pathexe.Remove(pathexe.LastIndexOf("\\"));
-                
-                wc.DownloadFile(uri + "/update_launcher", pathexe + "\\temp" + "\\3dconst_launch.exe");
+                wc.DownloadFileCompleted += (sender, e) => test(mainWindow);
+                wc.DownloadFileAsync(uri, pathexe + "\\temp\\3dconst_launch.exe");
             }
 
             string path = System.Reflection.Assembly.GetEntryAssembly().Location;
             path = path.Remove(path.LastIndexOf("\\"));
-            return Task.CompletedTask;
+            return true;
         }
 
     }

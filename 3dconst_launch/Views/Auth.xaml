@@ -3,135 +3,180 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:_3dconst_launch"
         mc:Ignorable="d"
-        Title="E1 Loading" Height="400" Width="600"
         WindowStyle="None"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        MouseDown="Window_MouseDown" Icon="/images/logoBorder.png">
-
-
-
-    <Border Opacity="1" CornerRadius="10" BorderThickness="2">
-
-        
-        <Border.BorderBrush>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#67B534" Offset="0"/>
-                <GradientStop Color="#5C883F" Offset="0.2"/>
-                <GradientStop Color="#397611" Offset="0.4"/>
-                <GradientStop Color="#A6DA85" Offset="0.6"/>
-                <GradientStop Color="#397611" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.BorderBrush>
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-                <GradientStop Color="#060531" Offset="0"/>
-                <GradientStop Color="#1b1448" Offset="0.75"/>
-            </LinearGradientBrush>
-        </Border.Background>
-
+        Title="E1" 
+        Height="500" 
+        Width="410" 
+        Icon="/images/logoBorder.png"
+        MouseDown="Window_MouseDown"
+        Style="{StaticResource MaterialDesignWindow}" Cursor="">
+    <Border CornerRadius="10" BorderThickness="2" Background="#111111" >
         <Grid x:Name="MainGrid" IsEnabled="True">
 
-            <Grid x:Name="FirstGrid">
-                <Grid.Effect>
-                    <BlurEffect Radius="0"/>
-                </Grid.Effect>
+
+            <Grid x:Name="FirstGrid" Cursor="">
+
                 <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-                    
-            <TextBlock Text="Аутентификация"
-                       Foreground="DarkGray"
-                       VerticalAlignment="Center"
+                    <RowDefinition Height="80"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Margin="20,5,20,0"
+                Padding="5,5,5,15"
+                Height="50"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                BorderThickness="0,0,0,1"
+                BorderBrush="White">
+                    <Grid Cursor="Hand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="/images/logo_new.png"
+                       Height="28"
+                       Width="90"
                        HorizontalAlignment="Left"
-                       Margin="5,0,0,0"
-                       FontSize="16"
-                       />
-            
-            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="100,0,100,0">
+                       Cursor="Arrow"
+                       Grid.Column="0"/>
 
-                <TextBlock Text="Логин"
-                       Foreground="White"
-                       FontSize="20"
-                       FontWeight="Medium"/>
+                    </Grid>
+                </Border>
 
-                <TextBox x:Name="tb_login"
-                     FontSize="18"
-                     FontWeight="Medium"
-                     Background="Transparent"
-                     Foreground="White"
-                     CaretBrush="LightGray"
-                     BorderBrush="DarkGray"
-                     BorderThickness="0,0,0,1"
-                     Height="40"
-                     TextAlignment="Center"
-                     VerticalContentAlignment="Center"
-                     Margin="0,2,0,20">
+                <StackPanel Grid.Row="1" 
+                        Margin="20,10,20,10"
+                        Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AccountCheckOutline"
+                                             Height="25" Width="25"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Foreground="White"/>
 
-                </TextBox>
+                        <TextBlock Text="Авторизация"
+                               Foreground="White"
+                               FontFamily="Manrope"
+                               FontSize="20"
+                               Margin="5,0,0,0"/>
 
-                <TextBlock Text="Пароль"
-                       Foreground="White"
-                       FontSize="20"
-                       FontWeight="Medium"/>
+                    </StackPanel>
 
-                <PasswordBox x:Name="tb_pass"
-                     FontSize="18"
-                     FontWeight="Medium"
-                     Background="Transparent"
-                     Foreground="White"
-                     CaretBrush="LightGray"
-                     BorderBrush="DarkGray"
-                     TextBlock.TextAlignment="Center"
-                     BorderThickness="0,0,0,1"
-                     Height="40"
-                     VerticalContentAlignment="Center"
-                     Margin="0,2,0,0">
+                    <TextBlock Text="Чтобы войти под ролью администратора введите логин и пароль!"
+                           Margin="0,10,0,0"
+                           Foreground="#D1D1D1"
+                           FontSize="14"
+                           TextWrapping="Wrap"
+                           FontFamily="Manrope"/>
 
-                </PasswordBox>
+                    <TextBlock Text="Логин"
+		                       Margin="0,20,0,0"
+		                       Foreground="#D1D1D1"
+		                       FontSize="10"
+		                       TextWrapping="Wrap"
+		                       FontFamily="Manrope"/>
 
-                <TextBlock Text=""
-                       x:Name="TB_Error"
-                       Margin="0,10,0,0"
-                       Foreground="DarkRed"
-                       FontSize="20"
-                       FontWeight="Medium"/>
+                    <TextBox x:Name="tb_login"
+                             Foreground="#D1D1D1"
+                             Margin="0,10,0,0"
+                             Height="50"
+                             Background="#1A1A1A"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                             Style="{StaticResource MaterialDesignFilledTextBox}"
+                             materialDesign:HintAssist.Foreground="#D1D1D1"
+                             IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxEnabledComboBox}"
+                             materialDesign:HintAssist.Hint="Введите логин"/>
 
-                <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0">
+                    <TextBlock Text="Пароль"
+		                       Margin="0,20,0,0"
+		                       Foreground="#D1D1D1"
+		                       FontSize="10"
+		                       TextWrapping="Wrap"
+		                       FontFamily="Manrope"/>
+
+                    <PasswordBox x:Name="tb_pass"
+                                 VerticalAlignment="Top"
+                                 Margin="0,10,0,0"
+                                 Height="50"
+                                 Foreground="#D1D1D1"
+                                 Background="#1A1A1A"
+                                 materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                 materialDesign:HintAssist.Hint="Введите пароль"
+                                 materialDesign:HintAssist.Foreground="#D1D1D1"
+                                 IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedPasswordFieldPasswordBoxEnabledComboBox}"
+                                 Style="{StaticResource MaterialDesignFilledRevealPasswordBox}" />
+
+                    <StackPanel x:Name="sp_warning" Orientation="Horizontal"
+                                Visibility="Collapsed"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="0,15,0,0">
+                        
+                        <materialDesign:PackIcon x:Name="icon_warning" 
+                                                 Margin="0,0,10,0"
+                                                 Kind="AccountCheckOutline"
+                                                 Height="25" Width="25"
+                                                 HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 Foreground="White"/>
+                        
+                        <TextBlock x:Name="tb_warning" Text="Warning"
+		                       Foreground="#D1D1D1"
+		                       FontSize="14"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"                                 
+                               TextWrapping="Wrap"
+		                       FontFamily="Manrope"/>
+                    </StackPanel>
+
+
+
+
+                </StackPanel>
+
+                <StackPanel Margin="20,0,20,15" Grid.Row="1" VerticalAlignment="Bottom">
                     <Button x:Name="Apply"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        FontSize="14"
-                        Height="30"
-                        Width="140"
-                        Content="Войти"
-                        DataContext="12"
-                        Click="Apply_Click"
-                        Style="{StaticResource ButtonSettings}"
-                        Template="{StaticResource CornerButton}"/>
+                            Click="Apply_Click"
+                            Width="auto"
+                            Margin="0"
+                            Content="Применить"
+                            VerticalAlignment="Bottom"
+                            Background="#17BC43"
+                            FontFamily="Manrope"
+                            FontSize="16"
+                            Foreground="White"
+                            BorderThickness="0"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
+                            Grid.Row="2" Cursor="Hand"/>
 
                     <Button x:Name="Cancel"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        FontSize="14"
-                        Height="30"
-                        Width="140"
-                        Margin="10,0,0,0"
-                        Content="Отменить"
-                        DataContext="12"
-                        Click="Cancel_Click"
-                        Style="{StaticResource ButtonCancel}"
-                        Template="{StaticResource CornerButton}"/>
-
-                </DockPanel>
+                            Click="Cancel_Click"
+                            Content="Отменить"
+                            Margin="0,10,0,0"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            Background="Transparent"
+                            Foreground="Red"
+                            FontSize="16"
+                            BorderBrush="Red"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Cursor="Hand"/>
 
 
-            </StackPanel>
+
+                </StackPanel>
+
+
             </Grid>
         </Grid>
     </Border>

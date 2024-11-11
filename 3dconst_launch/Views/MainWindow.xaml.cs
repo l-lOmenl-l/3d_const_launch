@@ -23,21 +23,30 @@ namespace _3dconst_launch
 
     public partial class MainWindow : Window
     {
+        bool firstUpload = true;
+
         public MainWindow(string ip)
         {
             InitializeComponent();
             Config.ip = ip;
+            if (ip != "https://3d.e-1.ru:8000")
+            {
+                SP_Warning.Visibility = Visibility.Visible;
+            }
+
             this.Loaded += MainWindow_Loaded;
         }
 
         private async void MainWindow_Loaded(object sender, EventArgs e)
         {
-           await Init();
+            //await Task.Run(() => Dispatcher.Invoke(() => Init()));
+            await Init();
         }
 
         public Circular CreateLoadingCircular(string msg)
         {
-            SecondGrid.Effect = new BlurEffect { Radius = 10 };
+            SecondGrid.Effect = new BlurEffect { Radius = 20 };
+            
             Circular circular = Spawn.CircularAdd(msg);
             MainGrid.RegisterName(circular.Name, circular);
             MainGrid.Children.Add(circular);
@@ -54,19 +63,19 @@ namespace _3dconst_launch
             SecondGrid.Effect = new BlurEffect { Radius = 0 };
         }
 
-        public void ChangeMsgLoadingCircular(string msg)
+        public void ChangeMsgLoadingCircular(string msg, double procent)
         {
             Circular circular = (Circular)MainGrid.FindName("dynamicCircular");
-            circular.ChangeMessage(msg);
+            circular.ChangeMessage(msg, procent);
         }
 
-        public async void ChangeMsgLoadingCircularAsync(string msg)
+        public async void ChangeMsgLoadingCircularAsync(string msg, double procent)
         {
-            await Task.Run(() => Dispatcher.Invoke(() => ChangeMsgLoadingCircular(msg)));
+            await Task.Run(() => Dispatcher.Invoke(() => ChangeMsgLoadingCircular(msg, procent)));
         }
 
 
-        private void CheckWebSocket()
+        private Task CheckWebSocket()
         {
             if (!System.IO.File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\E1_WebSocketLKK.lnk"))
             {
@@ -88,8 +97,10 @@ namespace _3dconst_launch
                     Process.Start(Config.GetPath() + "\\E1_WebSocketLKK" + "\\E1_WebSocketLKK.exe");
                 }
 
-                
+
             }
+
+            return Task.CompletedTask;
         }
 
         static bool IsProcessRunning(string processName)
@@ -97,28 +108,23 @@ namespace _3dconst_launch
             Process[] processes = Process.GetProcessesByName(processName);
             return processes.Length > 0;
         }
-    
 
 
-    private Task Init()
+
+        private async Task<Task> Init()
         {
             CreateLoadingCircular("Инициализация");
 
             //Проверка ВебСокета
-            CheckWebSocket();
+            await CheckWebSocket();
             Alias.AliasIp.TryGetValue(Config.ip, out var outTemp);
-            LabelTest.Content = outTemp;
 
-            AppShortcutToDesktop();
-            Config.Init(this);
+            //AppShortcutToDesktop();
+            await Config.Init(this);
 
-            ChangeMsgLoadingCircular("Проверка обновлений лаунчера");
-            Checklauncher();
+            ChangeMsgLoadingCircular("Проверка обновлений лаунчера", 0);
+            await Checklauncher();
 
-            /*
-            newcircular.ChangeMessage("Проверка обновлений конструктора");
-            FilesData.CheckDiffFiles();
-            */
             DestroyLoadingCircular();
             return Task.CompletedTask;
         }
@@ -164,15 +170,15 @@ namespace _3dconst_launch
             }
         }
 
-        
 
-        private void Checklauncher()
+
+        private Task Checklauncher()
         {
             var path = System.Reflection.Assembly.GetEntryAssembly()?.Location;
             var md5 = MD5.Create();
             var hash = BitConverter.ToString(md5.ComputeHash(System.IO.File.ReadAllBytes(path ?? string.Empty))).Replace("-", "").ToLower();
 
-            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/sync" + "/check_launcher");  
+            var req = (HttpWebRequest)WebRequest.Create(Config.GetIp() + "/sync" + "/check_launcher");
             req.Method = "GET";
             req.Headers.Add("Authorization", Config.GetAuth());
             req.Proxy = null;
@@ -180,70 +186,78 @@ namespace _3dconst_launch
 
             var res = (HttpWebResponse)req.GetResponse();
             var json = JsonSerializer.Deserialize<string>(res.GetResponseStream() ?? throw new InvalidOperationException());
-            
-            if (hash == json) return;
 
-            SP_Center.Children.Add(Spawn.InfoLabelAdd("Доступно обновление лаунчера"));
-            var btn_param = new Spawn.parametersButton
-            {
-                msg = "Обновить лаунчер",
-                heigth = 35,
-                width = 135,
-                FontSize = 14,
-                horizontalAligment = HorizontalAlignment.Center,
-                verticalAlignment = VerticalAlignment.Center,
-                RoutedEvent = DownloadLauncher_Click
-            };
-            Button btn = Spawn.ButtonAdd(btn_param);
-            SP_Center.Children.Add(btn);
-            btn.Style = (Style)FindResource("ButtonSettings");
-            btn.Template = (ControlTemplate)FindResource("CornerButton");
-            btn.DataContext = "9";
-            /*
-            var proc = new Process();
-            proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal))+"/update_launcher.exe";
-            proc.Start();
-            Application.Current.Shutdown();
-            */
+            if (hash == json) return Task.CompletedTask;
+            btn_upload_launch.Visibility = Visibility.Visible; 
+            return Task.CompletedTask;
         }
-       
-        private async void DownloadLauncher_Click(object sender, RoutedEventArgs e)
+
+        private void DownloadLauncher_Click()
         {
             CreateLoadingCircular("Загрузка лаунчера");
-            await Download.DownloadLauncher();
-            ChangeMsgLoadingCircular("Через 3 секунды лаунчер будет перезапущен.");
-            System.IO.File.Copy(".\\temp\\3dconst_launch.exe", ".\\3dconst_launch.exe.temp");
-            Thread.Sleep(3000);
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = "cmd.exe";
-            psi.Arguments = $"/c TIMEOUT /T 1 /NOBREAK && del 3dconst_launch.exe && move 3dconst_launch.exe.temp 3dconst_launch.exe && start 3dconst_launch.exe";
-            await Task.Run(() => Dispatcher.Invoke(() => Process.Start(psi)));
-            AppClose();
+            ChangeMsgLoadingCircular("Через 3 секунды лаунчер будет перезапущен.", 0);
+
+            Download.DownloadLauncher(this);
+   
+
         }
 
-
-
-
-        public async void ChangeProgressBatAsync(float value)
-        {
-            await Task.Run(() => Dispatcher.Invoke(() => ProgressUpload.Value = value));
-        }
-
-        public async void ChangeProgressBarVisibility(Visibility value)
-        {
-            await Task.Run(() => Dispatcher.Invoke(() => ProgressUpload.Visibility = value));
-        }
 
         public async void ChangeMessageAsync(string msg)
         {
             await Task.Run(() => Dispatcher.Invoke(() => label_message.Text = msg));
         }
 
+        public async void ActualConst()
+        {
+            firstUpload = false;
+            await Task.Run(() => Dispatcher.Invoke(() => Title.Text = "Можно запускать"));
+            await Task.Run(() => Dispatcher.Invoke(() => IconTitle.Kind = MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline));
+            await Task.Run(() => Dispatcher.Invoke(() => Desctiption.Text = "Конструктор загружен, файлы успешно прошли проверку, удачного дня и помните, при возникновении ошибок, вы всегда можете оставить свое обращение в сервисе обратной связи."));
+
+            await Task.Run(() => Dispatcher.Invoke(() => label_message.Text = "Файлы успешно прошли проверку"));
+            await Task.Run(() => Dispatcher.Invoke(() => icon_labelMessage.Kind = MaterialDesignThemes.Wpf.PackIconKind.Check));
+
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_launch.IsEnabled = true));
+            await Task.Run(() => Dispatcher.Invoke(() => btn_upload.Visibility = Visibility.Collapsed));
+        }
+
+        public async void FirstUploadConst()
+        {
+            firstUpload = true;
+            await Task.Run(() => Dispatcher.Invoke(() => Title.Text = "Требуется загрузка"));
+            await Task.Run(() => Dispatcher.Invoke(() => IconTitle.Kind = MaterialDesignThemes.Wpf.PackIconKind.CloseOutline));
+            await Task.Run(() => Dispatcher.Invoke(() => Desctiption.Text = "Конструктор не установлен. Требуется загрузка."));
+
+            await Task.Run(() => Dispatcher.Invoke(() => label_message.Text = "Конструктор не установлен"));
+            await Task.Run(() => Dispatcher.Invoke(() => icon_labelMessage.Kind = MaterialDesignThemes.Wpf.PackIconKind.EmoticonCryOutline));
+
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_launch.IsEnabled = false));
+            await Task.Run(() => Dispatcher.Invoke(() => btn_upload.Visibility = Visibility.Visible));
+            await Task.Run(() => Dispatcher.Invoke(() => text_btn_upload.Text = "Скачать"));
+
+        }
+
+        public async void UploadConst()
+        {
+            firstUpload = false;
+            await Task.Run(() => Dispatcher.Invoke(() => Title.Text = "Требуется обновление"));
+            await Task.Run(() => Dispatcher.Invoke(() => IconTitle.Kind = MaterialDesignThemes.Wpf.PackIconKind.Update));
+            await Task.Run(() => Dispatcher.Invoke(() => Desctiption.Text = "Файлы не прошли проверку, требуется обновление конструктора"));
+
+            await Task.Run(() => Dispatcher.Invoke(() => label_message.Text = "Файлы не прошли проверку"));
+            await Task.Run(() => Dispatcher.Invoke(() => icon_labelMessage.Kind = MaterialDesignThemes.Wpf.PackIconKind.CloseOutline));
+
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_launch.IsEnabled = false));
+            await Task.Run(() => Dispatcher.Invoke(() => btn_upload.Visibility = Visibility.Visible));
+            await Task.Run(() => Dispatcher.Invoke(() => text_btn_upload.Text = "Имеется обновление - 'Скачать'"));
+        }
+
 
         public async void BtnChange(string value)
         {
             await Task.Run(() => Dispatcher.Invoke(() => Btn_download.IsEnabled = true));
-            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Content = value));
+            await Task.Run(() => Dispatcher.Invoke(() => Btn_download.Text = value));
         }
 
 
@@ -252,83 +266,38 @@ namespace _3dconst_launch
             Dispatcher.Invoke(() => Application.Current.Shutdown());
         }
 
-        private async void Btn_download_Click(object sender, RoutedEventArgs e)
+        private void Btn_launch_Click(object sender, RoutedEventArgs e)
         {
-            switch (Btn_download.Content)
+
+            string parameters = "-url=" + Config.ip;
+
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                case "Загрузить":
-                    CreateLoadingCircular("Скачивание");
-                    Btn_download.IsEnabled = false;
-                    await Task.Run(() => Download.DownloadConstruct(this, FilesData.GetServerPath()));
-                    DestroyLoadingCircular();
-                    break;
+                FileName = Config.GetPath() + "/3dconst.exe",
+                Arguments = parameters,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                case "Обновление":
-                    CreateLoadingCircular("Скачивание");
-                    Btn_download.IsEnabled = false;
-                    await Task.Run(() => Download.DownloadConstruct(this, FilesData.CheckDiffFiles()));
-                    DestroyLoadingCircular();
-                    break;
-
-                case "Запустить":
-                    string parameters = "-url="+Config.ip;
-
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = Config.GetPath() + "/3dconst.exe",
-                        Arguments = parameters,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    try
-                    {
-                        using (Process process = Process.Start(startInfo))
-                        {
-                            // Чтение стандартного вывода и ошибок
-                            string output = process.StandardOutput.ReadToEnd();
-                            string error = process.StandardError.ReadToEnd();
-
-                            process.WaitForExit();
-
-                            // Вывод результатов
-                            Console.WriteLine("Output:");
-                            Console.WriteLine(output);
-                            Console.WriteLine("Error:");
-                            Console.WriteLine(error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Exception: {ex.Message}");
-                    }
-                    break;
+            try
+            {
+                using (Process process = Process.Start(startInfo))
+                {
+                    WindowState = WindowState.Minimized;
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    
+                    process.WaitForExit();
+                    WindowState = WindowState.Normal;
+                }
             }
-
-
-
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
         }
-
-        public void const_actual()
-        {
-            label_message.Text = "Actual";
-        }
-
-        public void const_update()
-        {
-            label_message.Text = "update";
-        }
-
-        public void const_download()
-        {
-            label_message.Text = "Готов к загрузке";
-            Btn_download.Content = "Загрузить";
-        }
-
-        public void ChangeMessage(string msg) => label_message.Text = msg;
-
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -342,10 +311,35 @@ namespace _3dconst_launch
 
         private void btnClose_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
-        private void btnSettings_Click(object sender, RoutedEventArgs e) 
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
-            var settingWindow = new Settings();
+            var settingWindow = new Settings(firstUpload);
             settingWindow.Show();
+        }
+
+        private async void btn_upload_Click(object sender, RoutedEventArgs e)
+        {
+            if (firstUpload)
+            {
+                CreateLoadingCircular("Скачивание");
+                Btn_download.IsEnabled = false;
+                await Task.Run(() => Download.DownloadConstruct(this, FilesData.GetServerPath()));
+                DestroyLoadingCircular();
+
+            }
+            else
+            {
+                CreateLoadingCircular("Скачивание");
+                Btn_download.IsEnabled = false;
+                await Task.Run(() => Download.DownloadConstruct(this, FilesData.CheckDiffFiles()));
+                DestroyLoadingCircular();
+
+            }
+        }
+
+        private void btn_upload_launch_Click(object sender, RoutedEventArgs e)
+        {
+             DownloadLauncher_Click();
         }
     }
 }

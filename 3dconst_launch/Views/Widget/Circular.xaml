@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:_3dconst_launch"
+             xmlns:local="clr-namespace:_3dconst_launch" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="150">
+             d:DesignHeight="150" d:DesignWidth="150" Background="#111111">
 
     <UserControl.Resources>
         <Storyboard x:Key="LoadingAnimation">
@@ -19,42 +19,47 @@
         </Storyboard>
     </UserControl.Resources>
 
+    
         <StackPanel x:Name="sp_main" 
                 HorizontalAlignment="Center" 
                 Visibility="Visible"            
                 VerticalAlignment="Center">
 
-
-            <Canvas Height="100" Width="100">
-                <Path x:Name="loadingPath"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                 Stroke="Green"
-                 StrokeThickness="3"
-                 StrokeStartLineCap="Round"
-                 StrokeEndLineCap="Round">
-                    <Path.Data>
-                        <PathGeometry>
-                            <PathFigure StartPoint="50,10">
-                                <ArcSegment Point="50,90"
-                                        Size="20,20"
-                                        SweepDirection="Clockwise"
-                                        IsLargeArc="False"/>
-                            </PathFigure>
-                        </PathGeometry>
-                    </Path.Data>
-                    <Path.RenderTransform>
-                        <RotateTransform CenterX="50" CenterY="50"/>
-                    </Path.RenderTransform>
-                </Path>
-
-            </Canvas>
-            <TextBlock x:Name="tb_message"  
+        <materialDesign:Card Padding="10"
+                             Width="120"
+                             Background="#332D2D2D" 
+                             UniformCornerRadius="100">
+            <Grid>
+                <TextBlock x:Name="tb_percent"  
                    Margin="0,5,0,0" 
                    Text="Message" 
+                   FontFamily="Manrope"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
                    TextAlignment="Center"
-                   Foreground="White"
-                   Visibility="Collapsed"/>
+                   Foreground="#D1D1D1"
+                   Visibility="Hidden"/>
+
+                <ProgressBar x:Name="circular"
+                         IsIndeterminate="True"
+                         Style="{StaticResource MaterialDesignCircularProgressBar}"
+                         Foreground="#17BC43"
+                         Value="10"
+                         Height="100"
+                         Width="100"/>
+            </Grid>
+
+        </materialDesign:Card>
+            
+
+            
+        <TextBlock x:Name="tb_message"  
+                   Margin="0,20,0,0" 
+                   Text="Message" 
+                   FontFamily="Manrope"
+                   TextAlignment="Center"
+                   Foreground="#D1D1D1"
+                   Visibility="Hidden"/>
 
     </StackPanel>
 

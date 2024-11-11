@@ -3,106 +3,358 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:_3dconst_launch"
         mc:Ignorable="d"
-        Title="E1 Settings" Height="500" Width="300"
         WindowStyle="None"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        MouseDown="Window_MouseDown" Icon="/images/logoBorder.png">
+        Title="E1" 
+        Height="752" 
+        Width="550" 
+        Icon="/images/logoBorder.png"
+        MouseDown="Window_MouseDown"
+        Style="{StaticResource MaterialDesignWindow}" Cursor="">
+    <Border CornerRadius="10" BorderThickness="2" Background="#111111" >
+        <Grid x:Name="MainGrid" IsEnabled="True">
 
 
-    <Border CornerRadius="10" >
-        <Border.Background>
-            <ImageBrush ImageSource="/images/back.jpg" Stretch="UniformToFill"/>
+            <Grid x:Name="SecondGrid">
 
-
-        </Border.Background >
-
-        <Border CornerRadius="10"
-            BorderThickness="2"
-            Opacity="0.99">
-            <Border.BorderBrush>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#67B534" Offset="0"/>
-                    <GradientStop Color="#5C883F" Offset="0.2"/>
-                    <GradientStop Color="#397611" Offset="0.4"/>
-                    <GradientStop Color="#A6DA85" Offset="0.6"/>
-                    <GradientStop Color="#397611" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.BorderBrush>
-
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-                    <GradientStop Color="#060531" Offset="0"/>
-                    <GradientStop Color="#1b1448" Offset="0.75"/>
-                </LinearGradientBrush>
-            </Border.Background>
-
-            <Grid x:Name="mainGrid">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition />
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="105"/>
+                    <RowDefinition Height="420"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="50"/>
-                    </Grid.ColumnDefinitions>
+                <Border Margin="20,18,20,0"
+                        Padding="5,5,5,15"
+                        Height="50"
+                        VerticalAlignment="Top"
+                        BorderThickness="0,0,0,1"
+                        BorderBrush="White">
+                    <Grid Cursor="Hand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Label Content="Настройки" Foreground="White" Grid.Column="0"/>
+                        <Image Source="/images/logo_new.png"
+                           Height="28"
+                           Width="90"
+                           HorizontalAlignment="Left"
+                           Cursor="Arrow"
+                           Grid.Column="0"/>
 
-                    <Button x:Name="btnClose"
-                            Height="22"
-                            Width="22"
-                            Content="X"
-                            DataContext="15"
-                            Style="{StaticResource ButtonClose}"
+                        <Button x:Name="btnClose"
+                            Click="btnClose_Click"
+                            Style="{StaticResource ButtonMin}" 
+                            BorderThickness="0"
+                            Content="{materialDesign:PackIcon Kind=Close}"
+                            DataContext="0"
                             Template="{StaticResource CornerButton}"
-                            Grid.Column="1"
-                            Click="btnClose_Click"/>
-                </Grid>
-                
-                <StackPanel x:Name="MainStack" Margin="10" Grid.Row="2">
+                            Grid.Column="3" Cursor="Hand">
+                        </Button>
 
-                    <StackPanel x:Name="StackSettings" Margin="0,0,0,20">
+                    </Grid>
 
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="130"/>
-                                <ColumnDefinition Width="150"/>
-                            </Grid.ColumnDefinitions>
-                        </Grid>
+
+                </Border>
+
+                <Border BorderThickness="0,0,0,0.5"
+                    BorderBrush="#414141"
+                    Grid.Row="1"
+                    Margin="20,5,20,0" Cursor="">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CogOutline" 
+                                                     Foreground="White"
+                                                     Height="20" Width="30"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"
+                                                     Padding="0, 0,0,0"/>
+                            <TextBlock Text="Настройки" 
+                               Foreground="White"
+                               FontSize="24" FontFamily="Manrope"/>
+
+                        </StackPanel>
+
+                        <TextBlock Foreground="#D1D1D1"
+                                   Margin="9,6,0,0"
+                                   FontSize="18"
+                                   TextWrapping="Wrap"
+                                   Text="Тут можно настроить графику в конструкторе"
+                                   />
                     </StackPanel>
 
-                    <Button Width="80" 
-                            Height="20" 
-                            Content="Применить" 
-                            DataContext="9"
-                            Style="{StaticResource ButtonSettings}"
-                            Template="{StaticResource CornerButton}"
-                            Click="Button_Click"/>
+
+
+                </Border>
+
+                <Grid Grid.Row="2"
+                      Margin="20,10,20,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                                Margin="2.5,0,2.5,0"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Дальность"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_ViewDistanceQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="2.5,0,2.5,0"
+                                Grid.Column="1"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Сглаживание"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_AntiAliasingQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Margin="2.5,0,2.5,0"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Качество теней"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_ShadowQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="2.5,0,2.5,0"
+                                Grid.Column="1"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Качество постпроцесса"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_PostProcessQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Margin="2.5,0,2.5,0"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Качество текстур"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_TextureQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="2.5,0,2.5,0"
+                                Grid.Column="1"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Качество эффектов"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_EffectsQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Margin="2.5,0,2.5,0"
+                                Grid.ColumnSpan="2"
+                                BorderThickness="0,0,0,0.5"
+                                BorderBrush="#414141">
+                            <StackPanel>
+                                <TextBlock Text="Качество шейдеров"
+                                           Foreground="#D1D1D1"
+                                           FontSize="16"
+                                           FontFamily="Manrope"/>
+
+                                <ComboBox x:Name="CB_ShadingQuality"
+                                          Width="auto"
+                                          Margin="0,7,0,0"
+                                          FontSize="16"
+                                          IsEnabled="{Binding Path=IsChecked, ElementName=OutlinedComboBoxEnabledCheckBox}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          TextElement.Foreground="#D1D1D1"
+                                          materialDesign:TextFieldAssist.UnderlineBrush="#D1D1D1"
+                                          Background="#1A1A1A"
+                                          Foreground="White"
+                                          materialDesign:ColorZoneAssist.Mode="Dark"
+                                          FontFamily="Manrope"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                </Grid>
+
+                <StackPanel Grid.Row="3"
+                            Margin="20,0,20,0">
+                    <Button Width="auto"
+                            Height="45"
+                            Click="Button_Click"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            Content="Применить"
+                            VerticalAlignment="Bottom"
+                            Background="#17BC43"
+                            FontFamily="Manrope"
+                            FontSize="16"
+                            Foreground="White"
+                            BorderThickness="0"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"/>
+
+                    <Button x:Name="Cancel"
+                            Click="DownloadKKT_Click"
+                            Content="Загрузить драйвер ККТ"
+                            Margin="0,10,0,0"
+                            Background="Transparent"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            Foreground="#D1D1D1"
+                            FontSize="16"
+                            BorderBrush="#D1D1D1"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Cursor="Hand"/>
+                    
+                    <Button x:Name="btn_TypeWork"
+                            Click="btn_TypeWork_Click"
+                            Content="Изменить режим работы"
+                            Margin="0,10,0,0"
+                            Background="Transparent"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            Foreground="#D1D1D1"
+                            FontSize="16"
+                            BorderBrush="#D1D1D1"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}" Cursor="Hand"/>
                 </StackPanel>
 
-                <Button x:Name="DownloadKKT"
-                            Grid.Row="3"
-                            Width="130"
-                            Height="20"
-                            Content="Загрузить драйвер ККТ"
-                            Margin="0,0,10,0"
-                            HorizontalAlignment="Right"
-                            DataContext="9"
-                            Click="DownloadKKT_Click"
-                            Style="{StaticResource ButtonSettings}"
-                            Template="{StaticResource CornerButton}"/>
-                <UserControl>
-                    
-                </UserControl>
+
             </Grid>
-        </Border>
+        </Grid>
+
     </Border>
 </Window>

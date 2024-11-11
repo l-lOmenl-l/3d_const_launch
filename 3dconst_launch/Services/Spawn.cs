@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Documents;
 
 namespace _3dconst_launch
 {
@@ -82,12 +83,12 @@ namespace _3dconst_launch
             };
 
 
-            Style customStyle = (Style)Application.Current.FindResource("ComboBoxStyle1");
-
+            Style customStyle = (Style)Application.Current.FindResource("MaterialDesignOutlinedComboBox");
             // Применение стиля к ComboBox
             combobox.Style = customStyle;
             combobox.HorizontalContentAlignment = HorizontalAlignment.Center;
             combobox.VerticalContentAlignment = VerticalAlignment.Center;
+
             combobox.SetValue(Grid.ColumnProperty, 1);
             foreach (var item in Alias.AliasSettingsParam)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace _3dconst_launch
@@ -46,35 +47,35 @@ namespace _3dconst_launch
         }
 
 
-        public static void Init(MainWindow mainWindow)
+        public static Task Init(MainWindow mainWindow)
         {
 
             if (Directory.Exists(GetPath() + "/temp"))
             {
                 Directory.Delete(GetPath() + "/temp", true);
             }
-            mainWindow.ChangeMessageAsync("Проверка конфигурации");
+            //mainWindow.ChangeMessageAsync("Проверка конфигурации");
 
 
             if (FilesData.GetLocalFilesData().Count > 0)
             {
                 if (!FilesData.CheckFiles())
                 {
-                    mainWindow.ChangeMessageAsync("Файлы не прошли проверку, готов к обновлению");
-                    mainWindow.BtnChange("Обновление");
+                    //mainWindow.ChangeMessageAsync("Файлы не прошли проверку, готов к обновлению");
+                    mainWindow.UploadConst();
                 }
                 else
                 {
-                    mainWindow.ChangeMessageAsync("Готов к запуску");
-                    mainWindow.BtnChange("Запустить");
+                    //mainWindow.ChangeMessageAsync("Готов к запуску");
+                    mainWindow.ActualConst();
                 }
             }
             else
             {
-                mainWindow.ChangeMessageAsync("Конструктор не установлен, готов к загрузке");
-                mainWindow.BtnChange("Загрузить");
+                //mainWindow.ChangeMessageAsync("Конструктор не установлен, готов к загрузке");
+                mainWindow.FirstUploadConst();
             }
-
+            return Task.CompletedTask;
         }
     }
 }

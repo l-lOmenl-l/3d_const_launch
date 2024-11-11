@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 
 namespace _3dconst_launch
@@ -11,6 +12,9 @@ namespace _3dconst_launch
     /// </summary>
     public partial class App : Application
     {
+
+
+
         //Обработчик события запуска приложения
         private void OnStartup(object sender, StartupEventArgs e)
         {

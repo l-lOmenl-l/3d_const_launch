@@ -1,1 +1,56 @@
-.vs
+.vs/
+*.user
+*.suo
+*.vcxproj.user
+*.csproj.user
+*.cache
+*.pdb
+*.opendb
+*.obj/
+*.exe
+*.dll
+*.log
+*.vspscc
+*.vssscc
+*.ncb
+*.sdf
+*.opensdf
+*.tlog
+*.lastbuildstate
+*.sln.docstates
+
+# Папки сборки
+bin/
+obj/
+
+# Пакеты NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Папки и файлы временных данных
+*.tmp
+*.temp
+*.log
+*.ide
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Конфигурационные файлы
+appsettings.json
+appsettings.*.json
+
+# Папки и файлы, специфичные для IDE
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Папки и файлы, специфичные для системы
+[Tt]humbs.db
+[Dd]esktop.ini

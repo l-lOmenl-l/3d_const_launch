@@ -6,6 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Reflection.Emit;
+using System.Windows.Media.Effects;
+using System.Threading.Tasks;
 
 namespace _3dconst_launch
 {
@@ -14,7 +17,79 @@ namespace _3dconst_launch
     /// </summary>
     public partial class Settings : Window
     {
-        public Settings()
+        private class setting
+        {
+            public int ViewDistanceQuality { get; set; }
+            public int AntiAliasingQuality { get; set; }
+            public int ShadowQuality { get; set; }
+            public int PostProcessQuality { get; set; }
+            public int TextureQuality { get; set; }
+            public int EffectsQuality { get; set; }
+            public int ShadingQuality { get; set; }
+
+            public void LoadData()
+            {
+                this.ViewDistanceQuality = ReadFileSettings("ViewDistanceQuality");
+                this.AntiAliasingQuality = ReadFileSettings("AntiAliasingQuality");
+                this.ShadowQuality = ReadFileSettings("ShadowQuality");
+                this.PostProcessQuality = ReadFileSettings("PostProcessQuality");
+                this.TextureQuality = ReadFileSettings("TextureQuality"); ;
+                this.EffectsQuality = ReadFileSettings("EffectsQuality");
+                this.ShadingQuality = ReadFileSettings("ShadingQuality");
+            }
+
+
+        }
+
+        public string TranslateNumberToName(int num)
+        {
+            switch (num)
+            {
+                case 0:
+                    return "Низко";
+                case 1:
+                    return "Средне";
+                case 2:
+                    return "Высоко";
+                case 3:
+                    return "Эпично";
+                case 4:
+                    return "Синематик";
+            }
+
+            return null;
+        }
+
+        public int TransNameToNumber(string name)
+        {
+            switch (name)
+            {
+                case "Низко":
+                    return 0;
+                case "Средне":
+                    return 1;
+                case "Высоко":
+                    return 2;
+                case "Эпично":
+                    return 3;
+                case "Синематик":
+                    return 4;
+            }
+
+            return -1;
+        }
+
+        private static int ReadFileSettings(string key)
+        {
+           var lines = File.ReadLines(GetPathConf() + "\\GameUserSettings.ini");
+           string result = string.Join("\n",lines.Where(s => s.IndexOf(key, StringComparison.InvariantCultureIgnoreCase) >= 0));
+           string[] words = result.Split(new char[] { '=' });
+           return Convert.ToInt32(words[1]);
+        }
+
+
+        List<ComboBox> cb = new List<ComboBox>();
+        public Settings(bool firstUpload)
         {
             InitializeComponent();
             Init();
@@ -25,47 +100,47 @@ namespace _3dconst_launch
 
         private static string GetPathConf()
         {
-            return "C:\\Users\\User\\AppData\\Local\\E1\\Saved\\Config\\WindowsNoEditor";
+            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\..\\" + "\\Local\\E1\\Saved\\Config\\WindowsNoEditor";
         }
+
+        private void cb_init()
+        {
+            List<string> names = new List<string> ();
+            for (int i = 0; i < 5; i++) 
+            {
+                names.Add(TranslateNumberToName(i));
+            }
+            cb.Add(CB_ViewDistanceQuality);
+            cb.Add(CB_AntiAliasingQuality);
+            cb.Add(CB_ShadowQuality);
+            cb.Add(CB_EffectsQuality);
+            cb.Add(CB_ShadingQuality);
+            cb.Add(CB_TextureQuality);
+            cb.Add(CB_PostProcessQuality);
+
+            foreach (ComboBox item in cb)
+            {
+                foreach (string name in names)
+                {
+                    item.Items.Add(name);
+                }
+            }
+
+        }
+
 
         private void Init()
         {
-            var ip = Config.GetIp();
-
-            var lines = File.ReadLines(GetPathConf() + "\\GameUserSettings.ini");
-            foreach (KeyValuePair<string, int> entry in InitSettings())
-            {
-                string result = string.Join("\n",
-                lines.Where(s => s.IndexOf(entry.Key, StringComparison.InvariantCultureIgnoreCase) >= 0));
-                string[] words = result.Split(new char[] { '=' });
-                _uploadSettings.Add(entry.Key, Convert.ToInt32(words[1]));
-            }
-            Console.WriteLine("");
-
-            foreach (var x in _uploadSettings.Select((entry, index) => new { Entry = entry, Index = index }))
-            {
-                var grd = new Grid();
-                grd.SetValue(Grid.RowProperty, x.Index + 3);
-                
-                var c1 = new ColumnDefinition
-                {
-                    Width = new GridLength(130, GridUnitType.Star)
-                };
-                
-                var c2 = new ColumnDefinition
-                {
-                    Width = new GridLength(150, GridUnitType.Star)
-                };
-
-                grd.ColumnDefinitions.Add(c1);
-                grd.ColumnDefinitions.Add(c2);
-
-                grd.Children.Add((Spawn.LabelAdd(x.Entry.Key)));
-                _refCb.Add(Spawn.ComboBoxAdd(x.Entry.Value, x.Entry.Key));
-                grd.Children.Add(_refCb.Last());
-                StackSettings.Children.Add(grd);
-            }
-
+            var settings = new setting();
+            settings.LoadData();
+            cb_init();
+            CB_ViewDistanceQuality.SelectedItem = TranslateNumberToName(settings.ViewDistanceQuality);
+            CB_AntiAliasingQuality.SelectedItem = TranslateNumberToName(settings.AntiAliasingQuality);
+            CB_ShadowQuality.SelectedItem = TranslateNumberToName(settings.ShadowQuality);
+            CB_PostProcessQuality.SelectedItem = TranslateNumberToName(settings.PostProcessQuality);
+            CB_TextureQuality.SelectedItem = TranslateNumberToName(settings.TextureQuality);
+            CB_EffectsQuality.SelectedItem = TranslateNumberToName(settings.EffectsQuality);
+            CB_ShadingQuality.SelectedItem = TranslateNumberToName(settings.ShadingQuality);
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e) => this.Close();
@@ -78,64 +153,66 @@ namespace _3dconst_launch
             }
         }
 
+
         private static Dictionary<string, int> InitSettings()
         {
             return Alias.ListSettingsParams.ToDictionary(name => name, name => -1);
         }
 
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var newSettings = _refCb.ToDictionary(name => name.Name, name => name.SelectedIndex);
-
             var lines = File.ReadLines(GetPathConf() + "\\GameUserSettings.ini").ToList();
-            foreach (KeyValuePair<string, int> newline in newSettings)
+
+            foreach (ComboBox cb_ in cb)
             {
                 for (var i = 0; i < lines.Count(); i++)
                 {
                     string temp = lines[i].Split(new char[] { '=' })[0];
                     temp = temp.Replace("sg.", "");
-                    if (newline.Key != temp) continue;
-                    Console.WriteLine(newline.Key + "==" + temp);
-                    lines[i] = "sg." + newline.Key + "=" + newline.Value;
+                    if (cb_.Name.Replace("CB_", "") != temp) continue;
+                    lines[i] = "sg." + cb_.Name.Replace("CB_", "") + "=" + TransNameToNumber(cb_.SelectedItem.ToString());
                     break;
                 }
             }
+
             File.WriteAllLines(GetPathConf() + "\\GameUserSettings.tmp", lines);
             File.Delete(GetPathConf() + "\\GameUserSettings.ini");
             File.Move(GetPathConf() + "\\GameUserSettings.tmp", GetPathConf() + "\\GameUserSettings.ini");
 
         }
-        /*
-        private void CB_IP_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        public Circular CreateLoadingCircular(string msg)
         {
-            var result = MessageBox.Show("Вы уверены?", "Изменить IP?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                {
-                    string newIp = "";
-                    foreach (var item in Alias.AliasIp.Where(item => item.Value == CB_IP.SelectedItem.ToString()))
-                    {
-                        newIp = item.Key;
-                    }    
-                    File.Delete(Config.GetPathConfig(true));
-                        
-                    //Config.CreateConf(newIp);
-                    var path = System.Reflection.Assembly.GetEntryAssembly()?.Location;
-                    var proc = new Process();
-                    proc.StartInfo.FileName = path?.Remove(path.LastIndexOf("\\", StringComparison.Ordinal)) + "/3dconst_launch.exe";
-                    proc.Start();
-                    System.Windows.Application.Current.Shutdown();
-                    break;
-                }
-                case MessageBoxResult.No:
-                    break;
-            }
+            Circular circular = Spawn.CircularAdd(msg);
+            MainGrid.RegisterName(circular.Name, circular);
+            MainGrid.Children.Add(circular);
+            MainGrid.IsEnabled = false;
+            return circular;
         }
-        */
-        private void DownloadKKT_Click(object sender, RoutedEventArgs e)
+
+        public void DestroyLoadingCircular()
         {
-            Download.DownloadKkt();
+            Circular circular = (Circular)MainGrid.FindName("dynamicCircular");
+            MainGrid.UnregisterName(circular.Name);
+            MainGrid.Children.Remove(circular);
+            MainGrid.IsEnabled = true;
+            SecondGrid.Effect = new BlurEffect { Radius = 0 };
+        }
+
+        private async void DownloadKKT_Click(object sender, RoutedEventArgs e)
+        {
+            var circular = CreateLoadingCircular("Скачивание");
+            circular.ChangeMessage("Загрузка", 0);
+            await Task.Run(() => Download.DownloadKkt());
+            DestroyLoadingCircular();
+            
+        }
+
+        private void btn_TypeWork_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
     }
 }

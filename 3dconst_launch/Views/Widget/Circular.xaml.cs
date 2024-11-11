@@ -24,11 +24,16 @@ namespace _3dconst_launch
         public Circular(string msg)
         {
             InitializeComponent();
-            StartLoadingAnimation(msg);
+            //StartLoadingAnimation(msg);
         }
 
-        public void StartLoadingAnimation(string message)
+        public void StartLoadingAnimation(string message, bool percent)
         {
+            if (percent)
+            {
+                tb_percent.Visibility = Visibility.Visible;
+            }
+
             if (!string.IsNullOrEmpty(message))
             {
                 tb_message.Visibility = Visibility.Visible;
@@ -41,8 +46,14 @@ namespace _3dconst_launch
             loadingAnimation.Begin();
         }
 
-        public void ChangeMessage(string message)
+        public void ChangeMessage(string message, double procent)
         {
+            if (procent != 0)
+            {
+                tb_percent.Visibility = Visibility.Visible;
+                tb_percent.Text = ((int)procent).ToString() + "%";
+            }
+            circular.Value = procent;
             tb_message.Visibility = Visibility.Visible;
             tb_message.Text = message;
         }

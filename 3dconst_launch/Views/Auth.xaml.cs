@@ -62,6 +62,16 @@ namespace _3dconst_launch
             public bool superuser {get; set;}
         }
 
+
+        private void ChangeWarning(string message, MaterialDesignThemes.Wpf.PackIconKind icon, SolidColorBrush color) 
+        {
+            sp_warning.Visibility = Visibility.Visible;
+            tb_warning.Text = message;
+            icon_warning.Kind = icon;
+            icon_warning.Foreground = color;
+        }
+
+
         private async void Apply_Click(object sender, RoutedEventArgs e)
         {
             MainGrid.IsEnabled = false;
@@ -79,10 +89,10 @@ namespace _3dconst_launch
                 using var client = new HttpClient();
                 var authToken = Encoding.ASCII.GetBytes($"{tb_login.Text}:{tb_pass.Password}");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
-                circular.ChangeMessage("Отправляю запрос");
+                circular.ChangeMessage("Отправляю запрос", 0);
                 // TODO: Изменить адрес аутентификации при деплое в прод
-                var result = await client.GetAsync("http://192.168.40.135:8000/login_launcher");
-                
+                var result = await client.GetAsync("https://3d.e-1.ru:8000/login_launcher");
+                //var result = await client.GetAsync("http://127.0.0.1:8000/login_launcher");
 
                 switch (result.StatusCode)
                 {
@@ -93,7 +103,6 @@ namespace _3dconst_launch
                         var json = JsonConvert.DeserializeObject<user>(responseBody);
                         if (json.superuser)
                         {
-                            refWelcome.LabelWelcome.Content = "Добро пожаловать " + tb_login.Text + "!";
                             refWelcome.CB_Type.Items.Clear();
                             foreach (var item in Alias.AliasIp)
                             {
@@ -108,7 +117,7 @@ namespace _3dconst_launch
                             MainGrid.Children.Remove(circular);
                             MainGrid.IsEnabled = true;
                             FirstGrid.Effect = new BlurEffect { Radius = 0 };
-                            TB_Error.Text = "Вы не являетесь администратором!";
+                            ChangeWarning("Вы не являетесь администратором!", MaterialDesignThemes.Wpf.PackIconKind.Alert, new SolidColorBrush(Colors.Yellow));
                             break;
                         }
 
@@ -117,14 +126,14 @@ namespace _3dconst_launch
                         MainGrid.Children.Remove(circular);
                         FirstGrid.Effect = new BlurEffect { Radius = 0 };
                         MainGrid.IsEnabled = true;
-                        TB_Error.Text = "Логин или пароль указан неверно!";
+                        ChangeWarning("Логин или пароль указан неверно!", MaterialDesignThemes.Wpf.PackIconKind.MinusCircleOutline, new SolidColorBrush(Colors.Yellow));
                         break;
 
                     default:
                         MainGrid.Children.Remove(circular);
                         FirstGrid.Effect = new BlurEffect { Radius = 0 };
                         MainGrid.IsEnabled = true;
-                        TB_Error.Text = "Неизвестная ошибка!";
+                        ChangeWarning("Неизвестная ошибка!", MaterialDesignThemes.Wpf.PackIconKind.Alien, new SolidColorBrush(Colors.LightGreen));
                         break;
                 }
             }
@@ -133,7 +142,7 @@ namespace _3dconst_launch
                 MainGrid.Children.Remove(circular);
                 FirstGrid.Effect = new BlurEffect { Radius = 0 };
                 MainGrid.IsEnabled = true;
-                TB_Error.Text = "Логин или пароль не введен!";
+                ChangeWarning("Логин или пароль не введен!", MaterialDesignThemes.Wpf.PackIconKind.Alert, new SolidColorBrush(Colors.Red));
             }
         }
        

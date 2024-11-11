@@ -3,180 +3,293 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:_3dconst_launch"
         mc:Ignorable="d"
-        Title="E1 Launcher" Height="550" Width="800"
         WindowStyle="None"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        MouseDown="Window_MouseDown" Icon="/images/logoBorder.png">
-    
+        Title="E1" 
+        Height="500" 
+        Width="550" 
+        Icon="/images/logoBorder.png"
+        MouseDown="Window_MouseDown"
+        Style="{StaticResource MaterialDesignWindow}" Cursor="">
+    <Border CornerRadius="10" BorderThickness="2" Background="#111111" >
+        <Grid x:Name="MainGrid" IsEnabled="True" >
 
-    
-    <Border CornerRadius="10" >
-        <Border.Background>
-            <ImageBrush ImageSource="/images/back.jpg" Stretch="UniformToFill"/>
-        </Border.Background >
-            
-    <Border CornerRadius="10"
-            BorderThickness="2"
-            Opacity="0.95">
-        <Border.BorderBrush>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#67B534" Offset="0"/>
-                <GradientStop Color="#5C883F" Offset="0.2"/>
-                <GradientStop Color="#397611" Offset="0.4"/>
-                <GradientStop Color="#A6DA85" Offset="0.6"/>
-                <GradientStop Color="#397611" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.BorderBrush>
 
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-                    <GradientStop Color="#060531" Offset="0"/>
-                    <GradientStop Color="#1b1448" Offset="0.75"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Grid x:Name="MainGrid" IsEnabled="False">
             <Grid x:Name="SecondGrid">
-                    <Grid.Effect>
-                        <BlurEffect Radius="0"/>
-                    </Grid.Effect>
-                    <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="140"/>
                     <RowDefinition/>
-                    <RowDefinition Height="100" />
                 </Grid.RowDefinitions>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="40"/>
-                        <ColumnDefinition Width="40"/>
-                        <ColumnDefinition Width="10"/>
-                    </Grid.ColumnDefinitions>
-                    <Label x:Name="LabelTest"
-                           Content="Test"
-                           Foreground="White"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Left" FontFamily="Source Serif Pro"
-                           FontSize="16"
-                           Opacity="0.5"
-                           Visibility="Visible"/>
 
-                    <Button x:Name="btnSettings"
-                            Content="Настройки"
-                            Height="25"
-                            Width="75"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Grid.Column="1"
-                            DataContext="9"
-                            Style="{StaticResource ButtonSettings}"
-                            Template="{StaticResource CornerButton}"
-                            Click="btnSettings_Click"/>
+                <Border Margin="20,18,20,0"
+                    Padding="5,5,5,15"
+                    Height="50"
+                    VerticalAlignment="Top"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="White">
+                    <Grid Cursor="Hand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Button x:Name="btnMinimize"
-                            BorderThickness="0"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Width="22"
-                            Height="22"
-                            DataContext="11"
-                            Style ="{StaticResource ButtonMinimaze}"
-                            Template="{StaticResource CornerButton}"
-                            Click="btnMinimize_Click"/>
+                        <Image Source="/images/logo_new.png"
+                           Height="28"
+                           Width="90"
+                           HorizontalAlignment="Left"
+                           Cursor="Arrow"
+                           Grid.Column="0"/>
 
-                    <Button x:Name="btnClose"
-                            Grid.Column="3"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Width="22"
-                            Height="22"
-                            DataContext="11"
-                            Style="{StaticResource ButtonClose}"
-                            Template="{StaticResource CornerButton}"
-                            Click="btnClose_Click"/>
-                </Grid>
+                        <Button x:Name="btnSettings"
+                                Height="25"
+                                Background="#2617BC43"
+                                Grid.Column="1" Cursor="Hand"
+                                Width="130"
+                                Click="btnSettings_Click"
+                                BorderThickness="0"
+                                materialDesign:ButtonAssist.CornerRadius="10"
+                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CogOutline"
+                                                         Margin="0,0,10,0"
+                                                         HorizontalAlignment="Left"
+                                                         VerticalAlignment="Center"
+                                                         Foreground="#17BC43"/>
+                                <TextBlock Text="Настройки"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontSize="14"
+                                           Foreground="#1DF857"
+                                           FontFamily="Manrope"/>
+                            </StackPanel>
 
-            
-                 <StackPanel x:Name="SP_Center" Width="250" Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0,35,0,0">
-                    <Image Source="/images/logo.png" Width="100" Height="100" Stretch="Fill"/>
-                    <TextBlock Text="Шкафы-купе" 
-                               HorizontalAlignment="Center" 
-                               DataContext="20" 
-                               Style="{StaticResource StyleForTextBlock}"/>
-                </StackPanel>
-                
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
+                        </Button>
 
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
+                        <Button x:Name="btnMinimize"
+                                Click="btnMinimize_Click"
+                                Style="{StaticResource ButtonMin}" 
+                                Content="{materialDesign:PackIcon Kind=WindowMinimize}"
+                                BorderThickness="0"
+                                DataContext="0"
+                                Width="20"
+                                Height="10"
+                                Template="{StaticResource CornerButton}"
+                                Grid.Column="2" Cursor="Hand">
+                        </Button>
 
-                        <ProgressBar x:Name="ProgressUpload"
-                                       Grid.Row="0"
-                                     BorderThickness="0"
-                                     Margin="10,0,10,0"
-                                     Minimum="0"
-                                     Maximum="100"
-                                     Value="0"
-                                     Visibility="Hidden"
-                                     IsIndeterminate="False"
-                                     >
+                        <Button x:Name="btnClose"
+                                Click="btnClose_Click"
+                                Style="{StaticResource ButtonMin}" 
+                                BorderThickness="0"
+                                Content="{materialDesign:PackIcon Kind=Close}"
+                                DataContext="0"
+                                Template="{StaticResource CornerButton}"
+                                Grid.Column="3" Cursor="Hand">
+                        </Button>
 
-                        </ProgressBar>
-                        <TextBlock x:Name="label_message"
-                                   Grid.Row="1"
-                                   Text=""
-                                   Foreground="White"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   MaxWidth="500"
-                                   MaxHeight="300"
-                                   FontSize="12"
-                                   FontFamily="Amiri"
-                                   Margin="0,0,20,0"
-                                   TextWrapping="Wrap"/>
                     </Grid>
-                   
-                    <Button x:Name="Btn_download"
+
+
+                </Border>
+
+                <Border BorderThickness="0,0,0,0"
+                    BorderBrush="#414141"
+                    Grid.Row="1"
+                    Margin="20,5,20,0" Cursor="">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon x:Name="IconTitle"
+                                                     Kind="CheckCircleOutline" 
+                                                     Margin="0,0,10,0"
+                                                     Foreground="White"
+                                                     Height="30" Width="30"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"
+                                                     Padding="0, 0,0,0"/>
+                            <TextBlock x:Name="Title"
+                                       Text="Можно запускать" 
+                                   Foreground="White"
+                                   FontSize="24" FontFamily="Manrope"/>
+
+                        </StackPanel>
+
+                        <TextBlock x:Name="Desctiption"
+                                   LineHeight="25"
+                                   Foreground="#D1D1D1"
+                                   Margin="9,10,0,0"
+                                   FontSize="18"
+                                   TextWrapping="Wrap"
+                                   Text="Какое то нужно придумать сюда описание без него будет не очень наполнено смотреться окно"/>
+                    </StackPanel>
+
+
+
+                </Border>
+
+                <StackPanel VerticalAlignment="Bottom"
+                            Grid.Row="2" 
+                            Margin="20,0,20,15">
+                    
+                    <StackPanel x:Name="SP_Warning"
+                                Visibility="Collapsed"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,0,0">
+
+                        <materialDesign:PackIcon x:Name="icon_Warning"
+                                                 Kind="Alert"
+                                                 Margin="0,0,5,0"
+                                                 Height="30"
+                                                 Width="30"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center"
+                                                 Foreground="Yellow"/>
+
+                        <TextBlock x:Name="label_Warning" 
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   FontFamily="Manrope"
+                                   FontSize="16"
+                                   Text="Тестовый режим"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Right"
+                                Margin="0,0,0,10">
+
+                        <materialDesign:PackIcon x:Name="icon_labelMessage"
+                                                 Kind="Check"
+                                                 Margin="0,0,5,0"
+                                                 Height="30"
+                                                 Width="30"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center"
+                                                 Foreground="White"/>
+                        
+                        <TextBlock x:Name="label_message" 
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   FontFamily="Manrope"
+                                   FontSize="16"
+                                   Text="Файлы успешно прошли проверку"/>
+                    </StackPanel>
+
+
+                    <Button x:Name="Btn_launch" 
+                            Width="auto"
+                            Height="60"
+                            Click="Btn_launch_Click"
+                            Background="#17BC43"
                             BorderThickness="0"
-                            Content="Запустить"
-                            Grid.Column="1"
-                            IsEnabled="False"
-                            DataContext="30"
-                            Style="{StaticResource ButtonDownload}"
-                            
-                            Click="Btn_download_Click" 
-                            FontFamily="Source Serif Pro">
-                
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}" CornerRadius="9,0,9,0">
-                                    <ContentPresenter VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center" />
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryDarkButton}"
+                            Grid.Row="2" Cursor="">
 
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
+                        <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+
+                            <TextBlock x:Name="Btn_download"
+                                        Text="Запустить"                         
+                                           FontFamily="Manrope"
+                                           Foreground="White"
+                                           FontSize="20"/>
+                            <materialDesign:PackIcon Kind="Launch"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center"
+                                                 Margin="10,0,0,0"
+                                                 Height="27"
+                                                 Width="27"
+                                                 Foreground="White"/>
+                        </StackPanel>
                     </Button>
-                </Grid>
-            </Grid>
-            </Grid>
 
+                    <Button x:Name="btn_upload" 
+                            Click="btn_upload_Click"
+                            Width="auto"
+                            Height="60"
+                            Margin="0,8,0,0"                     
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="White"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
+                            Grid.Row="2" Cursor="">
 
-        </Border>
+                        <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+
+                            <TextBlock x:Name="text_btn_upload" 
+                                       Text='Имеется обновление - "Скачать"'                         
+                                       FontFamily="Manrope"
+                                       Foreground="White"
+                                       FontSize="20"/>
+                            <materialDesign:PackIcon Kind="TrayArrowDown"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center"
+                                                 Margin="10,0,0,0"
+                                                 Height="27"
+                                                 Width="27"
+                                                 Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btn_upload_launch" 
+                            Click="btn_upload_launch_Click"
+                            Width="auto"
+                            Visibility="Collapsed"
+                            Height="60"
+                            Margin="0,8,0,0"                     
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="White"
+                            BorderThickness="1"
+                            materialDesign:ButtonAssist.CornerRadius="7"
+                            IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                            Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
+                            Grid.Row="2" Cursor="">
+
+                        <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+
+                            <TextBlock x:Name="text_btn_upload_launch" 
+                                       Text='Имеется обновление лаунчера - "Скачать"'                         
+                                       FontFamily="Manrope"
+                                       Foreground="White"
+                                       FontSize="20"/>
+                            <materialDesign:PackIcon Kind="TrayArrowDown"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center"
+                                                 Margin="10,0,0,0"
+                                                 Height="27"
+                                                 Width="27"
+                                                 Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+
     </Border>
-    
-    
 </Window>
